@@ -50,11 +50,7 @@ int main()
         BeginDrawing();
         ClearBackground(RAYWHITE);
         DrawFPS(10, 10);
-        ecs_man.ForEachEntity<Renderable_t>(
-                [](auto& ren, auto& pos, auto&&)
-                {
-                    DrawTexture(ren.sprite, pos.pos.x, pos.pos.y, RAYWHITE);
-                });
+        
         EndDrawing();
         ecs_man.ForEachEntity<Inputable>(
                 [&](auto& inp, auto& phy, auto&& ent_key) {
@@ -62,12 +58,12 @@ int main()
                     if (IsKeyDown(inp.down))  phy.phy.y = +100.0f;
                     if (IsKeyDown(inp.left))  phy.phy.x = -100.0f;
                     if (IsKeyDown(inp.right)) phy.phy.x = +100.0f;
-                    if constexpr (std::is_same_v<ECS::Entity_t<BasicCharacter_t>, typename std::remove_reference_t<decltype(ent_key)>::value_type>) {
+                    if constexpr (ECS::StaticCast<BasicCharacter_t, decltype(ent_key)>::value) {
                         if (IsKeyPressed(KEY_SPACE)) {
                             ecs_man.TransformTo<Invicible>(ent_key);
                         }
                     }
-                    else if constexpr (std::is_same_v<ECS::Entity_t<Invicible>, typename std::remove_reference_t<decltype(ent_key)>::value_type>) {
+                    else if constexpr (ECS::StaticCast<Invicible, decltype(ent_key)>::value) {
                         if (IsKeyPressed(KEY_R)) {
                             ecs_man.TransformTo<BasicCharacter_t>(ent_key, player_ren_args);
                         }
