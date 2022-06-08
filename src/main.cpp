@@ -1,81 +1,57 @@
 #include <raylib.h>
 
-#include <ecs_manager.hpp>
-#include <type_traits>
+#include "types.hpp"
 
-struct RenderComponent_t
-{
-    Texture2D sprite {  };
-};
+#include "game_factory.hpp"
+#include "resource_manager.hpp"
 
-struct PositionComponent_t
-{
-    Vector2 pos {  };
-};
+#include "systems/render.hpp"
+#include "systems/input.hpp"
+#include "systems/animation.hpp"
 
-struct PhysicsComponent_t
-{
-    Vector2 phy {  };
-};
-
-struct InputComponent_t
-{
-    KeyboardKey left  { KEY_LEFT  };
-    KeyboardKey up    { KEY_UP    };
-    KeyboardKey right { KEY_RIGHT };
-    KeyboardKey down  { KEY_DOWN  };
-};
+#include <stdlib.h>
 
 int main()
 {
-    using Renderable_t     = ECS::Base_t<RenderComponent_t, PositionComponent_t>;
-    using Movable_t        = ECS::Base_t<PositionComponent_t, PhysicsComponent_t>;
-    using Inputable        = ECS::Base_t<InputComponent_t, PhysicsComponent_t>;
-    using Invicible        = ECS::Derived_t<Inputable, Movable_t>;
-    using BasicCharacter_t = ECS::Derived_t<Renderable_t, Movable_t, Inputable>;
+    constexpr int screen_width  { 1280 };
+    constexpr int screen_height { 720 };
 
-    using ECSMan_t = ECS::ECSManager_t<Renderable_t, Movable_t, Inputable, BasicCharacter_t, Invicible>;
+    RenderSystem_t ren_sys { screen_width, screen_height, "GAEM ECS!" };
+    InputSystem_t inp_sys {  };
+    AnimationSystem_t anim_sys {  };
 
-    InitWindow(640, 480, "ECS Gaem!");
-    auto sp1 { LoadTexture("./sprite.png") };
-    Args::Arguments_t player_ren_args { Args::For_v<RenderComponent_t>, sp1 };
-    Args::Arguments_t player_pos_args { Args::For_v<PositionComponent_t>, 100.0f, 100.0f };
+    ResourceManager_t res_man {  };
+
+    ren_sys.set_background(res_man.GetTextureBackground());
 
     ECSMan_t ecs_man {  };
 
-    ecs_man.CreateEntity<BasicCharacter_t>(player_ren_args, player_pos_args);
+    GameFactory_t game_fact { ecs_man, res_man };
 
-    //SetTargetFPS(60);
+    game_fact.CreatePlayer(screen_width, screen_height);
+
     while (!WindowShouldClose()) {
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        DrawFPS(10, 10);
-        
-        EndDrawing();
-        ecs_man.ForEachEntity<Inputable>(
-                [&](auto& inp, auto& phy, auto&& ent_key) {
-                    if (IsKeyDown(inp.up))    phy.phy.y = -100.0f;
-                    if (IsKeyDown(inp.down))  phy.phy.y = +100.0f;
-                    if (IsKeyDown(inp.left))  phy.phy.x = -100.0f;
-                    if (IsKeyDown(inp.right)) phy.phy.x = +100.0f;
-                    if constexpr (ECS::StaticCast<BasicCharacter_t, decltype(ent_key)>::value) {
-                        if (IsKeyPressed(KEY_SPACE)) {
-                            ecs_man.TransformTo<Invicible>(ent_key);
-                        }
-                    }
-                    else if constexpr (ECS::StaticCast<Invicible, decltype(ent_key)>::value) {
-                        if (IsKeyPressed(KEY_R)) {
-                            ecs_man.TransformTo<BasicCharacter_t>(ent_key, player_ren_args);
-                        }
-                    }
-                });
+        ren_sys.update(ecs_man);
+        inp_sys.update(ecs_man, game_fact);
+        anim_sys.update(ecs_man, GetFrameTime());
         ecs_man.ForEachEntity<Movable_t>(
-                [](auto& pos, auto& phy, auto&&) {
-                    pos.pos.x += phy.phy.x * GetFrameTime();
-                    pos.pos.y += phy.phy.y * GetFrameTime();
+                [&](auto& phy, auto&&) {
+                    phy.vel.x += phy.acel.x * GetFrameTime();
+                    phy.vel.y += phy.acel.y * GetFrameTime();
+
+                    phy.pos.x += phy.vel.x * GetFrameTime();
+                    phy.pos.y += phy.vel.y * GetFrameTime();
+                    if (phy.pos.x + phy.orig.x > screen_width) {
+                        phy.pos.x = phy.pos.x + phy.orig.x - screen_width;
+                    } else if (phy.pos.x - phy.orig.x < 0) {
+                        phy.pos.x = screen_width - phy.pos.x;
+                    }
+                    if (phy.pos.y > screen_height) {
+                        phy.pos.y = 0.0f;
+                    } else if (phy.pos.y < 0) {
+                        phy.pos.y = screen_height;
+                    }
                 });
     }
-    UnloadTexture(sp1);
-    CloseWindow();
     return 0;
 }

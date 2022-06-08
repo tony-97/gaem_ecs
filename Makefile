@@ -1,7 +1,8 @@
 # Makefile config
+export WFLAGS    := -Wno-missing-braces -Wmissing-field-initializers
 export LDFLAGS   := -L/home/tony/git/raylib
 export LDLIBS    := -lraylib
-export CPPFLAGS  := -I../evolution/src -I../evolution/external -I/home/tony/git/raylib/src
+export CPPFLAGS  := -I../evolution/src -I../evolution/external -I/home/tony/git/raylib/src -I./src
 export EXEC_NAME ?= game
 export CXXFLAGS  := -std=c++17 -fno-rtti -fno-exceptions
 export MKDIR     := mkdir -p
@@ -21,7 +22,7 @@ else
 	CXXFLAGS   += -g -ggdb -O0
 ifeq ($(ASAN),1)
 	export ASAN_OPTIONS := strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1
-	export LDFLAGS := $(ASAN_FLAGS)
+	export LDFLAGS := $(LDFLAGS) $(ASAN_FLAGS)
 	CXXFLAGS       += $(ASAN_FLAGS)
 	BUILD_NAME     := $(BUILD_NAME)_asan
 endif
