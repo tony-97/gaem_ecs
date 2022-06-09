@@ -14,6 +14,7 @@ struct RenderSystem_t
         : mWidth { width }, mHeight { height }
     {
         InitWindow(width, height, title.data());
+        SetTargetFPS(60);
     }
 
     ~RenderSystem_t()
@@ -49,8 +50,8 @@ struct RenderSystem_t
                     //DrawTexturePro(ren.sprite, src_rec, dest_recxy, phy.orig, phy.ang, RAYWHITE);
                     //DrawTexture(ren.sprite, pos.pos.x - mWidth, pos.pos.y - mHeight, RAYWHITE);
                 });
-        EndDrawing();
         DrawFPS(10, 10);
+        EndDrawing();
     }
 private:
     int mWidth  {  };
