@@ -32,15 +32,22 @@ int main()
 
     while (!WindowShouldClose()) {
         ren_sys.update(ecs_man);
-        inp_sys.update(ecs_man, game_fact);
+        inp_sys.update(ecs_man, game_fact, res_man);
         anim_sys.update(ecs_man, GetFrameTime());
         ecs_man.ForEachEntity<Movable_t>(
                 [&](auto& phy, auto&&) {
-                    phy.vel.x += phy.acel.x * GetFrameTime();
-                    phy.vel.y += phy.acel.y * GetFrameTime();
+                    phy.w += phy.a * GetFrameTime();
+                    phy.vel.x += phy.acc.x * GetFrameTime();
+                    phy.vel.y += phy.acc.y * GetFrameTime();
 
+                    phy.ang += phy.w * GetFrameTime();
                     phy.pos.x += phy.vel.x * GetFrameTime();
                     phy.pos.y += phy.vel.y * GetFrameTime();
+
+                    phy.w -= phy.w * 0.8f * GetFrameTime();
+                    phy.vel.x -= phy.vel.x * 0.4f * GetFrameTime();
+                    phy.vel.y -= phy.vel.y * 0.4f * GetFrameTime();
+
                     if (phy.pos.x + phy.orig.x > screen_width) {
                         phy.pos.x = phy.pos.x + phy.orig.x - screen_width;
                     } else if (phy.pos.x - phy.orig.x < 0) {

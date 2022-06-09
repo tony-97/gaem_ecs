@@ -12,49 +12,50 @@
 #include <components/rocket_input.hpp>
 #include <interface.hpp>
 #include <utility>
-
+#include <iostream>
 struct InputSystem_t
 {
     constexpr explicit InputSystem_t() = default;
 
-    template<class ECSMan_t, class GFact_t>
-    constexpr void update(ECSMan_t& ecs_man, const GFact_t& gfact)
+    template<class ECSMan_t, class GFact_t, class ResMan_t>
+    constexpr void update(ECSMan_t& ecs_man, const GFact_t& gfact, const ResMan_t& res_man)
     {
         ecs_man.template ForEachEntity<PlayerInput_t>([&](const auto& inp, auto& phy, auto&&) {
-                    phy.acel.x = 0.0f;
-                    phy.acel.y = 0.0f;
-                    if (IsKeyDown(inp.left))  phy.ang  += -150.0f * GetFrameTime();
-                    if (IsKeyDown(inp.right)) phy.ang  += +150.0f * GetFrameTime();
+                    phy.acc.x = 0.0f;
+                    phy.acc.y = 0.0f;
+                    phy.a = 0.0f;
+                    if (IsKeyDown(inp.left))  phy.a += -300.0f;
+                    if (IsKeyDown(inp.right)) phy.a += +300.0f;
                     if (IsKeyDown(inp.up)) {
-                        phy.acel.y += -100.0f * cos(phy.ang * DEG2RAD);
-                        phy.acel.x += -100.0f * -sin(phy.ang * DEG2RAD);
+                        phy.acc.y += -100.0f * cos(phy.ang * DEG2RAD);
+                        phy.acc.x += -100.0f * -sin(phy.ang * DEG2RAD);
                     }
                     if (IsKeyDown(inp.down)) {
-                        phy.acel.y += +100.0f * cos(phy.ang * DEG2RAD);
-                        phy.acel.x += +100.0f * -sin(phy.ang * DEG2RAD);
+                        phy.acc.y += +100.0f * cos(phy.ang * DEG2RAD);
+                        phy.acc.x += +100.0f * -sin(phy.ang * DEG2RAD);
                     }
-                    //phy.acel.y = -phy.vel.y * 0.8;
-                    //phy.acel.x = -phy.vel.x * 0.8;
                 });
         ecs_man.template ForEachEntity<RocketInput_t>([&](const auto& rock_inp, auto&& ent) {
                     if (IsKeyDown(rock_inp.enable)) {
                         if constexpr (ECS::IsInstanceOf_v<RocketDisable_t, decltype(ent)>) {
+                            std::cout << rock_inp.type << std::endl;
                             switch (rock_inp.type) {
                             case RocketInputComponent_t::ROCKET_FRONT:
-                                ecs_man.template TransformTo<Rocket_t>(ent,
-                                                                       gfact.GetRocketFrontRenArgs(),
-                                                                       gfact.GetRocketAnimArgs());
+                              ecs_man.template TransformTo<Rocket_t>(ent,
+                                                                     gfact.GetRocketFrontRenArgs(),
+                                                                     gfact.GetRocketAnimArgs());
                                 break;
                             case RocketInputComponent_t::ROCKET_BOTTOM:
-                                ecs_man.template TransformTo<Rocket_t>(ent,
-                                                                       gfact.GetRocketBottomRenArgs(),
-                                                                       gfact.GetRocketAnimArgs());
+                              ecs_man.template TransformTo<Rocket_t>(ent,
+                                                                     gfact.GetRocketBottomRenArgs(),
+                                                                     gfact.GetRocketAnimArgs());
                                 break;
                             }
                             
                         }
                     } else {
                         if constexpr (ECS::IsInstanceOf_v<Rocket_t, decltype(ent)>) {
+                            std::cout << "Entro else" << std::endl;
                             ecs_man.template TransformTo<RocketDisable_t>(ent);
                         }
                     }

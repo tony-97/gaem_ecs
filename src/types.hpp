@@ -23,6 +23,6 @@ using ECSMan_t = ECS::ECSManager_t<Renderable_t,
                                    Movable_t,
                                    PlayerInput_t,
                                    RocketInput_t,
-                                   Rocket_t,
                                    RocketDisable_t,
+                                   Rocket_t,
                                    Player_t>;

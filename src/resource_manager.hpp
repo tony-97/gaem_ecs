@@ -22,6 +22,7 @@ struct ResourceManager_t : ECS::Uncopyable_t
     {
         UnloadTexture(mBackground);
         UnloadTexture(mRocketBottom);
+        UnloadTexture(mRocketFront);
         UnloadTexture(mPlayer);
     }
 
