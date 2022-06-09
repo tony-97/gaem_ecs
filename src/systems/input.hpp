@@ -11,8 +11,7 @@
 #include <components/player_input.hpp>
 #include <components/rocket_input.hpp>
 #include <interface.hpp>
-#include <utility>
-#include <iostream>
+
 struct InputSystem_t
 {
     constexpr explicit InputSystem_t() = default;
@@ -38,7 +37,6 @@ struct InputSystem_t
         ecs_man.template ForEachEntity<RocketInput_t>([&](const auto& rock_inp, auto&& ent) {
                     if (IsKeyDown(rock_inp.enable)) {
                         if constexpr (ECS::IsInstanceOf_v<RocketDisable_t, decltype(ent)>) {
-                            std::cout << rock_inp.type << std::endl;
                             switch (rock_inp.type) {
                             case RocketInputComponent_t::ROCKET_FRONT:
                               ecs_man.template TransformTo<Rocket_t>(ent,
@@ -55,7 +53,6 @@ struct InputSystem_t
                         }
                     } else {
                         if constexpr (ECS::IsInstanceOf_v<Rocket_t, decltype(ent)>) {
-                            std::cout << "Entro else" << std::endl;
                             ecs_man.template TransformTo<RocketDisable_t>(ent);
                         }
                     }
