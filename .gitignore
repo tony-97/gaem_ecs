@@ -5,4 +5,5 @@
 /compile_commands.json
 /compile_flags.txt
 /.cache
-
+/resources/gimp
+/resources/sounds
