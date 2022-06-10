@@ -10,6 +10,8 @@
 #include <components/player_input.hpp>
 #include <components/rocket_input.hpp>
 
+#include <cmath>
+
 template<class ECSMan_t, class ResMan_t>
 struct GameFactory_t
 {
@@ -57,6 +59,37 @@ struct GameFactory_t
         };
     }
 
+    constexpr auto CreateFireBullet(Vector2 pos, float rot) const
+    {
+        //Vector2 bullet_pos { -23 + pos.x, 5 + pos.y };
+        auto texture { mResMan.GetTextureBulletFire() };
+        const Args::Arguments_t ren_args {
+            Args::For_v<RenderComponent_t>,
+            texture,
+            Rectangle{
+                0.0f, 0.0f, 
+                texture.width / 16.0f,
+                static_cast<float>(texture.height)
+            }
+        };
+        const Args::Arguments_t anim_args {
+            Args::For_v<AnimationComponent_t>,
+            16,
+            0,
+            0.1f,
+        };
+        const Args::Arguments_t phy_args {
+            Args::For_v<PhysicsComponent_t>,
+            pos,
+            Vector2 { -400.0f * -std::sin(rot * DEG2RAD), -400.0f * std::cos(rot * DEG2RAD) },
+            Vector2 {  },
+            Vector2 { texture.width / 32.0f, texture.height / 2.0f },
+            0.0f,
+            rot
+        };
+        mECSMan.template CreateEntity<BasicCharacter_t>(ren_args, anim_args, phy_args);
+    }
+
     constexpr auto CreatePlayer(int screen_width, int screen_height) -> void
     {
         const auto player_sprite { mResMan.GetTexturePlayer() };
@@ -83,7 +116,7 @@ struct GameFactory_t
             Vector2 {  },
             Vector2 {  },
             Vector2 { player_sprite.width / 2.0f, player_sprite.height / 2.0f },
-            0.0f,
+            0.8f
         };
 
         mECSMan.template CreateEntity<Player_t>(player_ren_args,

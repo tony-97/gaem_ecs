@@ -16,22 +16,27 @@ struct InputSystem_t
 {
     constexpr explicit InputSystem_t() = default;
 
-    template<class ECSMan_t, class GFact_t, class ResMan_t>
-    constexpr void update(ECSMan_t& ecs_man, const GFact_t& gfact, const ResMan_t& res_man)
+    template<class ECSMan_t, class GFact_t>
+    constexpr void update(ECSMan_t& ecs_man, const GFact_t& gfact)
     {
-        ecs_man.template ForEachEntity<PlayerInput_t>([&](const auto& inp, auto& phy, auto&&) {
+        ecs_man.template ForEachEntity<PlayerInput_t>([&](const auto& inp, auto& phy, auto&& ent) {
                     phy.acc.x = 0.0f;
                     phy.acc.y = 0.0f;
                     phy.a = 0.0f;
-                    if (IsKeyDown(inp.left))  phy.a += -300.0f;
-                    if (IsKeyDown(inp.right)) phy.a += +300.0f;
+                    if (IsKeyDown(inp.left))  phy.a += -400.0f;
+                    if (IsKeyDown(inp.right)) phy.a += +400.0f;
                     if (IsKeyDown(inp.up)) {
-                        phy.acc.y += -100.0f * cos(phy.ang * DEG2RAD);
-                        phy.acc.x += -100.0f * -sin(phy.ang * DEG2RAD);
+                        phy.acc.y += -100.0f * std::cos(phy.ang * DEG2RAD);
+                        phy.acc.x += -100.0f * -std::sin(phy.ang * DEG2RAD);
                     }
                     if (IsKeyDown(inp.down)) {
-                        phy.acc.y += +100.0f * cos(phy.ang * DEG2RAD);
-                        phy.acc.x += +100.0f * -sin(phy.ang * DEG2RAD);
+                        phy.acc.y += +100.0f * std::cos(phy.ang * DEG2RAD);
+                        phy.acc.x += +100.0f * -std::sin(phy.ang * DEG2RAD);
+                    }
+                    if constexpr (ECS::IsInstanceOf_v<Player_t, decltype(ent)>) {
+                        if (IsKeyPressed(KEY_SPACE)) {
+                            gfact.CreateFireBullet(phy.pos, phy.ang);
+                        }
                     }
                 });
         ecs_man.template ForEachEntity<RocketInput_t>([&](const auto& rock_inp, auto&& ent) {

@@ -32,7 +32,7 @@ int main()
 
     while (!WindowShouldClose()) {
         ren_sys.update(ecs_man);
-        inp_sys.update(ecs_man, game_fact, res_man);
+        inp_sys.update(ecs_man, game_fact);
         anim_sys.update(ecs_man, GetFrameTime());
         ecs_man.ForEachEntity<Movable_t>(
                 [&](auto& phy, auto&&) {
@@ -44,20 +44,9 @@ int main()
                     phy.pos.x += phy.vel.x * GetFrameTime();
                     phy.pos.y += phy.vel.y * GetFrameTime();
 
-                    phy.w -= phy.w * 0.8f * GetFrameTime();
-                    phy.vel.x -= phy.vel.x * 0.4f * GetFrameTime();
-                    phy.vel.y -= phy.vel.y * 0.4f * GetFrameTime();
-
-                    if (phy.pos.x + phy.orig.x > screen_width) {
-                        phy.pos.x = phy.pos.x + phy.orig.x - screen_width;
-                    } else if (phy.pos.x - phy.orig.x < 0) {
-                        phy.pos.x = screen_width - phy.pos.x;
-                    }
-                    if (phy.pos.y > screen_height) {
-                        phy.pos.y = 0.0f;
-                    } else if (phy.pos.y < 0) {
-                        phy.pos.y = screen_height;
-                    }
+                    phy.w -= phy.w * phy.friction * GetFrameTime();
+                    phy.vel.x -= phy.vel.x * phy.friction * GetFrameTime();
+                    phy.vel.y -= phy.vel.y * phy.friction * GetFrameTime();
                 });
     }
     return 0;

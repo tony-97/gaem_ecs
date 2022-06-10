@@ -35,19 +35,19 @@ struct RenderSystem_t
         ecs_man.template ForEachEntity<Renderable_t>(
                 [&](auto& ren, auto& phy, auto&&)
                 {
-                    const Rectangle dest_rec   { phy.pos.x, phy.pos.y, (float)ren.crop_rec.width, (float)ren.crop_rec.height };
-                    //const Rectangle dest_recx  { phy.pos.x - mWidth, phy.pos.y, (float)ren.sprite.width, (float)ren.sprite.height };
-                    //const Rectangle dest_recy  { phy.pos.x, phy.pos.y - mHeight, (float)ren.sprite.width, (float)ren.sprite.height };
-                    //const Rectangle dest_recxy { phy.pos.x - mWidth, phy.pos.y - mHeight, (float)ren.sprite.width, (float)ren.sprite.height };
+                    const Rectangle dest_rec   { phy.pos.x, phy.pos.y, ren.crop_rec.width, ren.crop_rec.height };
+                    const Rectangle dest_recx  { phy.pos.x - mWidth, phy.pos.y, ren.crop_rec.width, ren.crop_rec.height };
+                    const Rectangle dest_recy  { phy.pos.x, phy.pos.y - mHeight, ren.crop_rec.width, ren.crop_rec.height };
+                    const Rectangle dest_recxy { phy.pos.x - mWidth, phy.pos.y - mHeight, ren.crop_rec.width, ren.crop_rec.height };
                     DrawTexturePro(ren.sprite, ren.crop_rec, dest_rec, phy.orig, phy.ang, RAYWHITE);
                     // x reflection
-                    //DrawTexturePro(ren.sprite, src_rec, dest_recx, phy.orig, phy.ang, RAYWHITE);
+                    DrawTexturePro(ren.sprite, ren.crop_rec, dest_recx, phy.orig, phy.ang, RAYWHITE);
                     ////DrawTexture(ren.sprite, pos.pos.x - mWidth, pos.pos.y, RAYWHITE);
                     //// y reflection
-                    //DrawTexturePro(ren.sprite, src_rec, dest_recy, phy.orig, phy.ang, RAYWHITE);
+                    DrawTexturePro(ren.sprite, ren.crop_rec, dest_recy, phy.orig, phy.ang, RAYWHITE);
                     ////DrawTexture(ren.sprite, pos.pos.x, pos.pos.y - mHeight, RAYWHITE);
                     //// xy reflection
-                    //DrawTexturePro(ren.sprite, src_rec, dest_recxy, phy.orig, phy.ang, RAYWHITE);
+                    DrawTexturePro(ren.sprite, ren.crop_rec, dest_recxy, phy.orig, phy.ang, RAYWHITE);
                     //DrawTexture(ren.sprite, pos.pos.x - mWidth, pos.pos.y - mHeight, RAYWHITE);
                 });
         DrawFPS(10, 10);

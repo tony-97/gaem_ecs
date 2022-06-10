@@ -8,6 +8,7 @@ struct PhysicsComponent_t
     Vector2 vel  {  };
     Vector2 acc  {  };
     Vector2 orig {  };
+    float friction {  };
     float ang    {  };
     float a  {  };
     float w  {  };
