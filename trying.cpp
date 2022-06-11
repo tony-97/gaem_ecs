@@ -11,27 +11,42 @@ Vector2 rotate_vector(Vector2 p, Vector2 orig, float rot)
     return p;
 }
 
+Vector2 to_polar_vector(Vector2 p, Vector2 orig, float rot)
+{
+    auto dist { std::hypot(p.x - orig.x, p.y - orig.y) };
+    auto ang  { std::atan2(p.y - orig.y, p.x - orig.x) };
+
+    return { dist, ang * RAD2DEG + rot };
+}
+
+Vector2 to_rect_vector(Vector2 polar, Vector2 pos)
+{
+    return { pos.x + polar.x * std::cos(polar.y * DEG2RAD),
+             pos.y + polar.x * std::sin(polar.y * DEG2RAD) };
+}
+
 int main()
 {
     InitWindow(640, 480, "Test!");
-    Rectangle rec { 0.0f, 0.0f, 100, 20.0f };
-    Vector2 orig { rec.width / 2.0f, rec.height / 2.0f };
-    Vector2 pos {  };
+    const Rectangle rec { 0.0f, 0.0f, 100, 20.0f };
+    const Vector2 orig { rec.width / 2.0f, rec.height / 2.0f };
+    Vector2 pos { 200.0f, 300.0f };
     float rot { 0.0f };
 
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
-        auto v1 { rotate_vector(Vector2{ rec.x, rec.y }, orig, rot) };
-        auto v2 { rotate_vector(Vector2{ rec.x + rec.width, rec.y }, orig, rot) };
-        auto v3 { rotate_vector(Vector2{ rec.x, rec.y + rec.height }, orig, rot) };
-        auto v4 { rotate_vector(Vector2{ rec.x + rec.width, rec.y + rec.height }, orig, rot) };
+        pos = GetMousePosition();
+        auto v1 { to_polar_vector(Vector2{ rec.x, rec.y }, orig, rot) };
+        auto v2 { to_polar_vector(Vector2{ rec.x + rec.width, rec.y }, orig, rot) };
+        auto v3 { to_polar_vector(Vector2{ rec.x, rec.y + rec.height }, orig, rot) };
+        auto v4 { to_polar_vector(Vector2{ rec.x + rec.width, rec.y + rec.height }, orig, rot) };
         BeginDrawing();
         ClearBackground(RAYWHITE);
-        DrawCircleV(v1, 5, RED);
-        DrawCircleV(v2, 5, YELLOW);
-        DrawCircleV(v3, 5, PINK);
-        DrawCircleV(v4, 5, GREEN);
-        DrawCircleV(orig, 5, BLUE);
+        DrawCircleV(to_rect_vector(v1, pos), 5, RED);
+        DrawCircleV(to_rect_vector(v2, pos), 5, YELLOW);
+        DrawCircleV(to_rect_vector(v3, pos), 5, PINK);
+        DrawCircleV(to_rect_vector(v4, pos), 5, GREEN);
+        DrawCircleV(pos, 5, BLUE);
         EndDrawing();
    
         if (IsKeyDown(KEY_SPACE)) {

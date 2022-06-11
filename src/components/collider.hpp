@@ -2,5 +2,4 @@
 
 struct ColliderComponent_t
 {
-    Rectangle box {  };
 };

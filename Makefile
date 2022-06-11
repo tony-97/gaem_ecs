@@ -1,8 +1,8 @@
 # Makefile config
 export WFLAGS    := -Wno-missing-braces -Wmissing-field-initializers
-export LDFLAGS   := -L/home/tony/git/raylib
-export LDLIBS    := -lraylib
-export CPPFLAGS  := -I../evolution/src -I../evolution/external -I/home/tony/git/raylib/src -I./src
+export LDFLAGS   := -L../raylib
+export LDLIBS    := -lraylib -lwinmm -lgdi32
+export CPPFLAGS  := -I../evolution/src -I../evolution/external -I../raylib/src -I.. -I./src
 export EXEC_NAME ?= game
 export CXXFLAGS  := -std=c++17 -fno-rtti -fno-exceptions
 export MKDIR     := mkdir -p

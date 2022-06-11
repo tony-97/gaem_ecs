@@ -34,7 +34,7 @@ struct InputSystem_t
                         phy.acc.x += +100.0f * -std::sin(phy.ang * DEG2RAD);
                     }
                     if constexpr (ECS::IsInstanceOf_v<Player_t, decltype(ent)>) {
-                        if (IsKeyPressed(KEY_SPACE)) {
+                        if (IsKeyDown(KEY_SPACE)) {
                             gfact.CreateFireBullet(phy.pos, phy.ang);
                         }
                     }

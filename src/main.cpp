@@ -8,6 +8,7 @@
 #include "systems/render.hpp"
 #include "systems/input.hpp"
 #include "systems/animation.hpp"
+#include "systems/collider.hpp"
 
 #include <stdlib.h>
 
@@ -19,6 +20,7 @@ int main()
     RenderSystem_t ren_sys { screen_width, screen_height, "GAEM ECS!" };
     InputSystem_t inp_sys {  };
     AnimationSystem_t anim_sys {  };
+    ColliderSystem_t col_sys {  };
 
     ResourceManager_t res_man {  };
 
@@ -48,6 +50,7 @@ int main()
                     phy.vel.x -= phy.vel.x * phy.friction * GetFrameTime();
                     phy.vel.y -= phy.vel.y * phy.friction * GetFrameTime();
                 });
+        col_sys.update(ecs_man, screen_width, screen_height);
     }
     return 0;
 }

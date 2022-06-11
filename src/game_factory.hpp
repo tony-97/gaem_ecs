@@ -9,6 +9,8 @@
 #include <components/animation.hpp>
 #include <components/player_input.hpp>
 #include <components/rocket_input.hpp>
+#include <components/health.hpp>
+#include <components/collider.hpp>
 
 #include <cmath>
 

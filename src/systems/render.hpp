@@ -14,7 +14,7 @@ struct RenderSystem_t
         : mWidth { width }, mHeight { height }
     {
         InitWindow(width, height, title.data());
-        SetTargetFPS(60);
+        //SetTargetFPS(60);
     }
 
     ~RenderSystem_t()

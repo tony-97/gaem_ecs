@@ -18,10 +18,10 @@ using PlayerInput_t    = ECS::Base_t<PlayerInputComponent_t, PhysicsComponent_t>
 using RocketInput_t    = ECS::Base_t<RocketInputComponent_t>;
 using Collidable_t     = ECS::Base_t<ColliderComponent_t, PhysicsComponent_t>;
 using Alive_t          = ECS::Base_t<HealthComponent_t>;
-using BasicCharacter_t = ECS::Derived_t<Animable_t, Movable_t, Renderable_t, Collidable_t, HealthComponent_t>;
-using Rocket_t         = ECS::Derived_t<Animable_t, Movable_t, RocketInput_t, PlayerInput_t, Collidable_t, HealthComponent_t>;
-using RocketDisable_t  = ECS::Derived_t<Movable_t, RocketInput_t, PlayerInput_t, Collidable_t, HealthComponent_t>;
-using Player_t         = ECS::Derived_t<Renderable_t, Movable_t, PlayerInput_t, Collidable_t, HealthComponent_t>;
+using BasicCharacter_t = ECS::Derived_t<Animable_t, Movable_t, Renderable_t, Collidable_t, Alive_t>;
+using Rocket_t         = ECS::Derived_t<Animable_t, Movable_t, RocketInput_t, PlayerInput_t, Collidable_t, Alive_t>;
+using RocketDisable_t  = ECS::Derived_t<Movable_t, RocketInput_t, PlayerInput_t, Collidable_t, Alive_t>;
+using Player_t         = ECS::Derived_t<Renderable_t, Movable_t, PlayerInput_t, Collidable_t, Alive_t>;
 
 using ECSMan_t = ECS::ECSManager_t<Renderable_t,
                                    Animable_t,
