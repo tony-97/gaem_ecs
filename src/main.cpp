@@ -9,6 +9,8 @@
 #include "systems/input.hpp"
 #include "systems/animation.hpp"
 #include "systems/collider.hpp"
+#include "systems/health.hpp"
+#include "systems/bullet.hpp"
 
 #include <stdlib.h>
 
@@ -21,6 +23,8 @@ int main()
     InputSystem_t inp_sys {  };
     AnimationSystem_t anim_sys {  };
     ColliderSystem_t col_sys {  };
+    HealthSystem_T hel_sys {  };
+    BulletSystem_t bull_sys {  };
 
     ResourceManager_t res_man {  };
 
@@ -51,6 +55,8 @@ int main()
                     phy.vel.y -= phy.vel.y * phy.friction * GetFrameTime();
                 });
         col_sys.update(ecs_man, screen_width, screen_height);
+        hel_sys.update(ecs_man);
+        bull_sys.update(ecs_man, GetFrameTime());
     }
     return 0;
 }

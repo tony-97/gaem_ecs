@@ -10,6 +10,7 @@
 #include <components/player_input.hpp>
 #include <components/rocket_input.hpp>
 #include <components/health.hpp>
+#include <components/bullet.hpp>
 #include <components/collider.hpp>
 
 #include <cmath>
@@ -89,7 +90,7 @@ struct GameFactory_t
             0.0f,
             rot
         };
-        mECSMan.template CreateEntity<BasicCharacter_t>(ren_args, anim_args, phy_args);
+        mECSMan.template CreateEntity<Bullet_t>(ren_args, anim_args, phy_args);
     }
 
     constexpr auto CreatePlayer(int screen_width, int screen_height) -> void
