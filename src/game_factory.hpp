@@ -8,10 +8,11 @@
 #include <components/physics.hpp>
 #include <components/animation.hpp>
 #include <components/player_input.hpp>
-#include <components/rocket_input.hpp>
+#include <components/input_enabler.hpp>
 #include <components/health.hpp>
 #include <components/bullet.hpp>
 #include <components/collider.hpp>
+#include <components/spawn.hpp>
 
 #include <cmath>
 
@@ -22,6 +23,50 @@ struct GameFactory_t
         : mECSMan { ecs_man }, mResMan { res_man }
     {
         
+    }
+
+    static constexpr auto Shoot(int x, int y, float rot, void* gfact)
+    {
+        auto gfact_ptr = reinterpret_cast<GameFactory_t*>(gfact);
+        gfact_ptr->CreateFireBullet({ static_cast<float>(x), static_cast<float>(y) }, rot);
+    }
+
+    static constexpr auto SpawnAsteroids(int, int, float, GameFactory_t&)
+    {
+        
+    }
+
+    template<class Ent_t>
+    constexpr auto Enable(Ent_t&& ent, InputEnablerComponent_t::Object_t type)
+    {
+        if constexpr (ECS::IsInstanceOf_v<RocketOff_t, decltype(ent)>) {
+            switch (type) {
+            case InputEnablerComponent_t::ROCKET_FRONT:
+              mECSMan.template TransformTo<RocketOn_t>(ent,
+                                                     GetRocketFrontRenArgs(),
+                                                     GetRocketAnimArgs());
+                break;
+            case InputEnablerComponent_t::ROCKET_BOTTOM:
+              mECSMan.template TransformTo<RocketOn_t>(ent,
+                                                     GetRocketBottomRenArgs(),
+                                                     GetRocketAnimArgs());
+                break;
+            default:
+                break;
+            }
+        } else if constexpr (ECS::IsInstanceOf_v<BulletSpawnerOff_t, decltype(ent)>) {
+            mECSMan.template TransformTo<BulletSpawnerOn_t>(ent, GetBulletSpawnerSpawnArgs());
+        }
+    }
+
+    template<class Ent_t>
+    constexpr auto Disable(Ent_t&& ent, InputEnablerComponent_t::Object_t)
+    {
+        if constexpr (ECS::IsInstanceOf_v<RocketOn_t, decltype(ent)>) {
+            mECSMan.template TransformTo<RocketOff_t>(ent);
+        } else if constexpr (ECS::IsInstanceOf_v<BulletSpawnerOn_t, decltype(ent)>) {
+            mECSMan.template TransformTo<BulletSpawnerOff_t>(ent);
+        }
     }
 
     constexpr auto GetPlayerCropRect() const
@@ -62,10 +107,20 @@ struct GameFactory_t
         };
     }
 
-    constexpr auto CreateFireBullet(Vector2 pos, float rot) const
+    constexpr auto GetBulletSpawnerSpawnArgs() const
     {
-        //Vector2 bullet_pos { -23 + pos.x, 5 + pos.y };
-        auto texture { mResMan.GetTextureBulletFire() };
+        return Args::Arguments_t {
+            Args::For_v<SpawnComponent_t>,
+            Shoot,
+            0.1f,
+            0.0f,
+            30u,
+        };       
+    }
+
+    constexpr auto CreateFireBullet(Vector2 pos, float rot)
+    {
+        const auto texture { mResMan.GetTextureBulletFire() };
         const Args::Arguments_t ren_args {
             Args::For_v<RenderComponent_t>,
             texture,
@@ -86,7 +141,7 @@ struct GameFactory_t
             pos,
             Vector2 { -400.0f * -std::sin(rot * DEG2RAD), -400.0f * std::cos(rot * DEG2RAD) },
             Vector2 {  },
-            Vector2 { texture.width / 32.0f, texture.height / 2.0f },
+            Vector2 { texture.width / 32.0f, texture.height * 1.0f },
             0.0f,
             rot
         };
@@ -97,37 +152,62 @@ struct GameFactory_t
     {
         const auto player_sprite { mResMan.GetTexturePlayer() };
         const Rectangle crop_rec { GetPlayerCropRect() };
+        const Vector2 player_pos { screen_width / 2.0f, screen_height / 2.0f };
         const Args::Arguments_t player_ren_args {
             Args::For_v<RenderComponent_t>,
             player_sprite,
             crop_rec,
         };
         const Args::Arguments_t rocket_bottom_inp_args {
-            Args::For_v<RocketInputComponent_t>,
+            Args::For_v<InputEnablerComponent_t>,
             KEY_W,
-            RocketInputComponent_t::ROCKET_BOTTOM
+            InputEnablerComponent_t::ROCKET_BOTTOM
         };
         const Args::Arguments_t rocket_front_inp_args {
-            Args::For_v<RocketInputComponent_t>,
+            Args::For_v<InputEnablerComponent_t>,
             KEY_S,
-            RocketInputComponent_t::ROCKET_FRONT
+            InputEnablerComponent_t::ROCKET_FRONT
         };
         const Args::Arguments_t player_phy_args {
             Args::For_v<PhysicsComponent_t>,
-            Vector2 { screen_width / 2.0f,
-                      screen_height / 2.0f },
+            player_pos,
             Vector2 {  },
             Vector2 {  },
             Vector2 { player_sprite.width / 2.0f, player_sprite.height / 2.0f },
             0.8f
         };
+        const Args::Arguments_t bullet_spawner_inp_args {
+            Args::For_v<InputEnablerComponent_t>,
+            KEY_SPACE,
+            InputEnablerComponent_t::BULLET_SPAWNER
+        };
 
+        const Args::Arguments_t left_bullet_spawner_phy_args {
+            Args::For_v<PhysicsComponent_t>,
+            Vector2 { player_pos.x - 23, player_pos.y + 5 },
+            Vector2 {  },
+            Vector2 {  },
+            Vector2 { 23, -5 },
+            0.8f
+        };
+        const Args::Arguments_t right_bullet_spawner_phy_args {
+            Args::For_v<PhysicsComponent_t>,
+            Vector2 { player_pos.x + 23, player_pos.y + 5 },
+            Vector2 {  },
+            Vector2 {  },
+            Vector2 { -23, -5 },
+            0.8f
+        };
         mECSMan.template CreateEntity<Player_t>(player_ren_args,
                                                 player_phy_args);
-        mECSMan.template CreateEntity<RocketDisable_t>(rocket_bottom_inp_args,
-                                                       player_phy_args);
-        mECSMan.template CreateEntity<RocketDisable_t>(rocket_front_inp_args,
-                                                       player_phy_args);
+        mECSMan.template CreateEntity<BulletSpawnerOff_t>(bullet_spawner_inp_args,
+                                                          left_bullet_spawner_phy_args);
+        mECSMan.template CreateEntity<BulletSpawnerOff_t>(bullet_spawner_inp_args,
+                                                          right_bullet_spawner_phy_args);
+        mECSMan.template CreateEntity<RocketOff_t>(rocket_bottom_inp_args,
+                                                   player_phy_args);
+        mECSMan.template CreateEntity<RocketOff_t>(rocket_front_inp_args,
+                                                   player_phy_args);
     }
 private:
     ECSMan_t& mECSMan {  };

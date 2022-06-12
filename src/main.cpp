@@ -11,6 +11,7 @@
 #include "systems/collider.hpp"
 #include "systems/health.hpp"
 #include "systems/bullet.hpp"
+#include "systems/spawn.hpp"
 
 #include <stdlib.h>
 
@@ -25,6 +26,7 @@ int main()
     ColliderSystem_t col_sys {  };
     HealthSystem_T hel_sys {  };
     BulletSystem_t bull_sys {  };
+    SpawnSystem_t spawn_sys {  };
 
     ResourceManager_t res_man {  };
 
@@ -57,6 +59,7 @@ int main()
         col_sys.update(ecs_man, screen_width, screen_height);
         hel_sys.update(ecs_man);
         bull_sys.update(ecs_man, GetFrameTime());
+        spawn_sys.update(ecs_man, game_fact, GetFrameTime());
     }
     return 0;
 }
