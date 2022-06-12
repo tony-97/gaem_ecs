@@ -37,6 +37,7 @@ int main()
     GameFactory_t game_fact { ecs_man, res_man };
 
     game_fact.CreatePlayer(screen_width, screen_height);
+    game_fact.CreateAsteroidSpawners(screen_width, screen_height);
 
     while (!WindowShouldClose()) {
         ren_sys.update(ecs_man);

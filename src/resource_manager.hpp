@@ -10,11 +10,13 @@
 struct ResourceManager_t : ECS::Uncopyable_t
 {
     explicit ResourceManager_t()
-        : mPlayer { LoadTexture("./resources/images/ship.png") },
-          mRocketBottom { LoadTexture("./resources/images/rocket_bottom1.png") },
-          mRocketFront { LoadTexture("./resources/images/rocket_front1.png") },
-          mBulletFire { LoadTexture("./resources/images/fire_red.png") },
-          mBackground { LoadTexture("./resources/images/background.png") }
+        : mPlayer        { LoadTexture("./resources/images/ship.png") },
+          mRocketBottom  { LoadTexture("./resources/images/rocket_bottom1.png") },
+          mRocketFront   { LoadTexture("./resources/images/rocket_front1.png") },
+          mBulletFire    { LoadTexture("./resources/images/fire_red.png") },
+          mAsteroid      { LoadTexture("./resources/images/rock.png") },
+          mAsteroidSmall { LoadTexture("./resources/images/rock_small.png") },
+          mBackground    { LoadTexture("./resources/images/background.png") }
     {
         
     }
@@ -27,15 +29,19 @@ struct ResourceManager_t : ECS::Uncopyable_t
         UnloadTexture(mPlayer);
     }
 
-    Texture2D GetTexturePlayer()       const { return mPlayer;       }
-    Texture2D GetTextureRocketBottom() const { return mRocketBottom; }
-    Texture2D GetTextureRocketFront()  const { return mRocketFront;  }
-    Texture2D GetTextureBulletFire()   const { return mBulletFire;   }
-    Texture2D GetTextureBackground()   const { return mBackground;   }
+    Texture2D GetTexturePlayer()        const { return mPlayer;        }
+    Texture2D GetTextureRocketBottom()  const { return mRocketBottom;  }
+    Texture2D GetTextureRocketFront()   const { return mRocketFront;   }
+    Texture2D GetTextureAsteroid()      const { return mAsteroid;      }
+    Texture2D GetTextureAsteroidSmall() const { return mAsteroidSmall; }
+    Texture2D GetTextureBulletFire()    const { return mBulletFire;    }
+    Texture2D GetTextureBackground()    const { return mBackground;    }
 private:
-    const Texture2D mPlayer {  };
-    const Texture2D mRocketBottom {  };
-    const Texture2D mRocketFront {  };
-    const Texture2D mBulletFire {  };
-    const Texture2D mBackground {  };
+    const Texture2D mPlayer        {  };
+    const Texture2D mRocketBottom  {  };
+    const Texture2D mRocketFront   {  };
+    const Texture2D mBulletFire    {  };
+    const Texture2D mAsteroid      {  };
+    const Texture2D mAsteroidSmall {  };
+    const Texture2D mBackground    {  };
 };

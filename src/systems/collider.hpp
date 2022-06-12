@@ -30,5 +30,20 @@ struct ColliderSystem_t
                     phy.pos.x += screen_width;
                 }
         });
+        /*ecs_man.template ForEachEntity<AsteroidsSpawner_t>([&](auto& phy, auto&& ent) {
+                    if constexpr (not ECS::IsInstanceOf_v<AsteroidsSpawner_t, decltype(ent)>) {
+                        return;
+                    }
+                    if (phy.pos.x < 0) {
+                        phy.pos.x += screen_width;
+                    } else if (phy.pos.x > screen_width) {
+                        phy.pos.x -= screen_width;
+                    }
+                    if (phy.pos.y < 0) {
+                        phy.pos.y += screen_height;
+                    } else if (phy.pos.x > screen_height) {
+                        phy.pos.y -= screen_height;
+                    }
+                });*/
     }
 };

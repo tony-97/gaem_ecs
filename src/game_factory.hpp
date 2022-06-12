@@ -16,6 +16,8 @@
 
 #include <cmath>
 
+#include <limits>
+
 template<class ECSMan_t, class ResMan_t>
 struct GameFactory_t
 {
@@ -31,9 +33,10 @@ struct GameFactory_t
         gfact_ptr->CreateFireBullet({ static_cast<float>(x), static_cast<float>(y) }, rot);
     }
 
-    static constexpr auto SpawnAsteroids(int, int, float, GameFactory_t&)
+    static constexpr auto SpawnAsteroids(int x, int y, float rot, void* gfact)
     {
-        
+        auto gfact_ptr = reinterpret_cast<GameFactory_t*>(gfact);
+        gfact_ptr->CreateAsteroid({ static_cast<float>(x), static_cast<float>(y) }, rot);
     }
 
     template<class Ent_t>
@@ -116,6 +119,92 @@ struct GameFactory_t
             0.15f,
             30u,
         };       
+    }
+
+    constexpr auto CreateAsteroidSpawners(int screen_width, int screen_height)
+    {
+        float sw { static_cast<float>(screen_width) };
+        float sh { static_cast<float>(screen_height) };
+        const Args::Arguments_t left_asteroid_spawner_phy_args {
+            Args::For_v<PhysicsComponent_t>,
+            Vector2{ 0.0f, 0.0f },
+            Vector2{ 0.0f, 150.0f },
+            Vector2{  },
+            Vector2{  },
+            1.0f,
+            90.0f
+        };
+        const Args::Arguments_t right_asteroid_spawner_phy_args {
+            Args::For_v<PhysicsComponent_t>,
+            Vector2{ sw, sh },
+            Vector2{ 0.0f, -150.0f },
+            Vector2{  },
+            Vector2{  },
+            1.0f
+            -90.0f
+        };
+        const Args::Arguments_t top_asteroid_spawner_phy_args {
+            Args::For_v<PhysicsComponent_t>,
+            Vector2{ sw, 0.0f },
+            Vector2{ -150.0f, 0.0f },
+            Vector2{  },
+            Vector2{  },
+            1.0f,
+        };
+        const Args::Arguments_t bottom_asteroid_spawner_phy_args {
+            Args::For_v<PhysicsComponent_t>,
+            Vector2{ 0.0f, sh },
+            Vector2{ 150.0f, 0.0f },
+            Vector2{  },
+            Vector2{  },
+            1.0f,
+            180.0f
+        };
+        const Args::Arguments_t asteroid_spawner_spawn_args {
+            Args::For_v<SpawnComponent_t>,
+            SpawnAsteroids,
+            1.5f,
+            0.0f,
+            std::numeric_limits<unsigned>::max()
+        };
+        mECSMan.template CreateEntity<AsteroidsSpawner_t>(left_asteroid_spawner_phy_args,
+                                                          asteroid_spawner_spawn_args);
+        mECSMan.template CreateEntity<AsteroidsSpawner_t>(right_asteroid_spawner_phy_args,
+                                                          asteroid_spawner_spawn_args);
+        mECSMan.template CreateEntity<AsteroidsSpawner_t>(top_asteroid_spawner_phy_args,
+                                                          asteroid_spawner_spawn_args);
+        mECSMan.template CreateEntity<AsteroidsSpawner_t>(bottom_asteroid_spawner_phy_args,
+                                                          asteroid_spawner_spawn_args);
+    }
+
+    constexpr auto CreateAsteroid(Vector2 pos, float rot)
+    {
+        auto texture { GetRandomValue(0, 100) % 2 ? mResMan.GetTextureAsteroid() : mResMan.GetTextureAsteroidSmall() };
+        const Args::Arguments_t ren_args {
+            Args::For_v<RenderComponent_t>,
+            texture,
+            Rectangle {
+                0.0f, 0.0f,
+                texture.width / 16.0f,
+                texture.height / 2.0f
+            }
+        };
+        const Args::Arguments_t anim_args {
+            Args::For_v<AnimationComponent_t>,
+            16,
+            0,
+            0.1f
+        };
+        const Args::Arguments_t phy_args {
+            Args::For_v<PhysicsComponent_t>,
+            pos,
+            Vector2 { -400.0f * -std::sin(rot * DEG2RAD), -400.0f * std::cos(rot * DEG2RAD) },
+            Vector2 {  },
+            Vector2 { texture.width / 32.0f, texture.height / 2.0f },
+            0.0f,
+            rot
+        };
+        mECSMan.template CreateEntity<Asteroids_t>(ren_args, anim_args, phy_args);
     }
 
     constexpr auto CreateFireBullet(Vector2 pos, float rot)

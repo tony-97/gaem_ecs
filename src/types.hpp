@@ -25,22 +25,26 @@ using Bulletable_t       = ECS::Base_t<BulletComponent_t, HealthComponent_t>;
 using Bullet_t           = ECS::Derived_t<Animable_t, Movable_t, Renderable_t, Bulletable_t, Collidable_t>;
 using BulletSpawnerOn_t  = ECS::Derived_t<Spawner_t, Movable_t, InputEnabler_t, PlayerInput_t>;
 using BulletSpawnerOff_t = ECS::Derived_t<Movable_t, InputEnabler_t, PlayerInput_t>;
+using Asteroids_t        = ECS::Derived_t<Animable_t, Movable_t, Renderable_t, Collidable_t>;
+using AsteroidsSpawner_t = ECS::Derived_t<Spawner_t, Movable_t>;
 using RocketOn_t         = ECS::Derived_t<Animable_t, Movable_t, InputEnabler_t, PlayerInput_t, Collidable_t, Alive_t>;
 using RocketOff_t        = ECS::Derived_t<Movable_t, InputEnabler_t, PlayerInput_t, Collidable_t, Alive_t>;
 using Player_t           = ECS::Derived_t<Renderable_t, Movable_t, PlayerInput_t, Collidable_t, Alive_t>;
 
 using ECSMan_t = ECS::ECSManager_t<Renderable_t,
-                                   Animable_t,
                                    Movable_t,
-                                   Alive_t,
+                                   Animable_t,
                                    PlayerInput_t,
                                    InputEnabler_t,
                                    Collidable_t,
-                                   Bulletable_t,
+                                   Alive_t,
                                    Spawner_t,
+                                   Bulletable_t,
+                                   Bullet_t,
                                    BulletSpawnerOn_t,
                                    BulletSpawnerOff_t,
-                                   Bullet_t,
-                                   RocketOff_t,
+                                   Asteroids_t,
+                                   AsteroidsSpawner_t,
                                    RocketOn_t,
+                                   RocketOff_t,
                                    Player_t>;
