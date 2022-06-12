@@ -10,7 +10,7 @@ struct SpawnSystem_t
     {
         ecs_man.template ForEachEntity<Spawner_t>([&](auto& spawn, const auto& phy, auto&&){
                     spawn.elapsed += elapsed_time;
-                    if (spawn.spawned > 0 && spawn.elapsed > spawn.spawn_interval) {
+                    if (spawn.spawned > 0 && spawn.elapsed >= spawn.spawn_interval) {
                         const Vector2 orig { phy.pos.x + phy.orig.x, phy.pos.y + phy.orig.y };
                         const auto polar_vec { to_polar_vector(phy.pos, orig, phy.ang) };
                         const auto dest_vec { to_rect_vector(polar_vec, orig) };

@@ -113,7 +113,7 @@ struct GameFactory_t
             Args::For_v<SpawnComponent_t>,
             Shoot,
             0.1f,
-            0.0f,
+            0.15f,
             30u,
         };       
     }
