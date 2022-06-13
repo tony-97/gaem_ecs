@@ -18,7 +18,8 @@ struct ResourceManager_t : ECS::Uncopyable_t
           mAsteroidSmall { LoadTexture("./resources/images/rock_small.png") },
           mBackground    { LoadTexture("./resources/images/background.png") }
     {
-        
+        InitAudioDevice();
+        mLaser = LoadSound("./resources/sounds/laser_sound.wav");
     }
 
     ~ResourceManager_t()
@@ -27,7 +28,10 @@ struct ResourceManager_t : ECS::Uncopyable_t
         UnloadTexture(mRocketBottom);
         UnloadTexture(mRocketFront);
         UnloadTexture(mPlayer);
+        CloseAudioDevice();
     }
+
+    Sound GetLaserSound() const { return mLaser; }
 
     Texture2D GetTexturePlayer()        const { return mPlayer;        }
     Texture2D GetTextureRocketBottom()  const { return mRocketBottom;  }
@@ -37,6 +41,8 @@ struct ResourceManager_t : ECS::Uncopyable_t
     Texture2D GetTextureBulletFire()    const { return mBulletFire;    }
     Texture2D GetTextureBackground()    const { return mBackground;    }
 private:
+    Sound  mLaser {  };
+
     const Texture2D mPlayer        {  };
     const Texture2D mRocketBottom  {  };
     const Texture2D mRocketFront   {  };
