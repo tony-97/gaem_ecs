@@ -30,7 +30,7 @@ struct ColliderSystem_t
                     phy.pos.x += screen_width;
                 }
         });
-        /*ecs_man.template ForEachEntity<AsteroidsSpawner_t>([&](auto& phy, auto&& ent) {
+        ecs_man.template ForEachEntity<AsteroidsSpawner_t>([&](const auto&,auto& phy, auto&& ent) {
                     if constexpr (not ECS::IsInstanceOf_v<AsteroidsSpawner_t, decltype(ent)>) {
                         return;
                     }
@@ -41,9 +41,9 @@ struct ColliderSystem_t
                     }
                     if (phy.pos.y < 0) {
                         phy.pos.y += screen_height;
-                    } else if (phy.pos.x > screen_height) {
+                    } else if (phy.pos.y > screen_height) {
                         phy.pos.y -= screen_height;
                     }
-                });*/
+                });
     }
 };
