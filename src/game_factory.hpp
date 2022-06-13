@@ -277,7 +277,7 @@ struct GameFactory_t
             Vector2 {  },
             Vector2 {  },
             Vector2 { 23, -5 },
-            0.8f
+            0.8f,
         };
         const Args::Arguments_t right_bullet_spawner_phy_args {
             Args::For_v<PhysicsComponent_t>,
@@ -285,7 +285,7 @@ struct GameFactory_t
             Vector2 {  },
             Vector2 {  },
             Vector2 { -23, -5 },
-            0.8f
+            0.8f,
         };
         mECSMan.template CreateEntity<Player_t>(player_ren_args,
                                                 player_phy_args);

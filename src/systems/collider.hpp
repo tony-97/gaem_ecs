@@ -19,12 +19,12 @@ struct ColliderSystem_t
                 const auto v2 { to_rect_vector(polar_v2, phy.pos) };
                 const auto v3 { to_rect_vector(polar_v3, phy.pos) };
                 const auto v4 { to_rect_vector(polar_v4, phy.pos) };
-                if (v1.y > screen_height || v2.y > screen_height || v3.y > screen_height || v4.y > screen_height) {
+                if (v1.y > screen_height && v2.y > screen_height && v3.y > screen_height && v4.y > screen_height) {
                     phy.pos.y -= screen_height;
                 } else if (v1.y < 0 || v2.y < 0 || v3.y < 0 || v4.y < 0) {
                     phy.pos.y += screen_height;
                 }
-                if (v1.x > screen_width || v2.x > screen_width || v3.x > screen_width || v4.x > screen_width) {
+                if (v1.x > screen_width && v2.x > screen_width && v3.x > screen_width && v4.x > screen_width) {
                     phy.pos.x -= screen_width;
                 } else if (v1.x < 0 || v2.x < 0 || v3.x < 0 || v4.x < 0) {
                     phy.pos.x += screen_width;
