@@ -2,6 +2,7 @@
 
 #include <arguments.hpp>
 
+#include "raylib.h"
 #include "types.hpp"
 
 #include <components/render.hpp>
@@ -131,7 +132,7 @@ struct GameFactory_t
             Vector2{ 0.0f, 150.0f },
             Vector2{  },
             Vector2{  },
-            1.0f,
+            0.0f,
             90.0f
         };
         const Args::Arguments_t right_asteroid_spawner_phy_args {
@@ -140,7 +141,7 @@ struct GameFactory_t
             Vector2{ 0.0f, -150.0f },
             Vector2{  },
             Vector2{  },
-            1.0f
+            0.0f,
             -90.0f
         };
         const Args::Arguments_t top_asteroid_spawner_phy_args {
@@ -149,7 +150,8 @@ struct GameFactory_t
             Vector2{ -150.0f, 0.0f },
             Vector2{  },
             Vector2{  },
-            1.0f,
+            0.0f,
+            180.0f,
         };
         const Args::Arguments_t bottom_asteroid_spawner_phy_args {
             Args::For_v<PhysicsComponent_t>,
@@ -157,8 +159,8 @@ struct GameFactory_t
             Vector2{ 150.0f, 0.0f },
             Vector2{  },
             Vector2{  },
-            1.0f,
-            180.0f
+            0.0f,
+            0.0f
         };
         const Args::Arguments_t asteroid_spawner_spawn_args {
             Args::For_v<SpawnComponent_t>,
@@ -180,6 +182,7 @@ struct GameFactory_t
     constexpr auto CreateAsteroid(Vector2 pos, float rot)
     {
         auto texture { GetRandomValue(0, 100) % 2 ? mResMan.GetTextureAsteroid() : mResMan.GetTextureAsteroidSmall() };
+        rot += GetRandomValue(-15, 15);
         const Args::Arguments_t ren_args {
             Args::For_v<RenderComponent_t>,
             texture,
@@ -209,6 +212,7 @@ struct GameFactory_t
 
     constexpr auto CreateFireBullet(Vector2 pos, float rot)
     {
+        PlaySoundMulti(mResMan.GetLaserSound());
         const auto texture { mResMan.GetTextureBulletFire() };
         const Args::Arguments_t ren_args {
             Args::For_v<RenderComponent_t>,
@@ -225,6 +229,7 @@ struct GameFactory_t
             0,
             0.1f,
         };
+        rot += GetRandomValue(-2, 2);
         const Args::Arguments_t phy_args {
             Args::For_v<PhysicsComponent_t>,
             pos,
