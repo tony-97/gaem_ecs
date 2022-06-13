@@ -4,6 +4,7 @@
 
 #include <raylib.h>
 
+#include "interface.hpp"
 #include "types.hpp"
 
 #include <components/render.hpp>
@@ -42,13 +43,10 @@ struct RenderSystem_t
                     DrawTexturePro(ren.sprite, ren.crop_rec, dest_rec, phy.orig, phy.ang, RAYWHITE);
                     // x reflection
                     DrawTexturePro(ren.sprite, ren.crop_rec, dest_recx, phy.orig, phy.ang, RAYWHITE);
-                    ////DrawTexture(ren.sprite, pos.pos.x - mWidth, pos.pos.y, RAYWHITE);
                     //// y reflection
                     DrawTexturePro(ren.sprite, ren.crop_rec, dest_recy, phy.orig, phy.ang, RAYWHITE);
-                    ////DrawTexture(ren.sprite, pos.pos.x, pos.pos.y - mHeight, RAYWHITE);
                     //// xy reflection
                     DrawTexturePro(ren.sprite, ren.crop_rec, dest_recxy, phy.orig, phy.ang, RAYWHITE);
-                    //DrawTexture(ren.sprite, pos.pos.x - mWidth, pos.pos.y - mHeight, RAYWHITE);
                 });
         DrawFPS(10, 10);
         EndDrawing();
