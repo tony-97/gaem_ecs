@@ -165,8 +165,8 @@ struct GameFactory_t
         const Args::Arguments_t asteroid_spawner_spawn_args {
             Args::For_v<SpawnComponent_t>,
             SpawnAsteroids,
-            1.5f,
-            0.0f,
+            7.0f,
+            7.1f,
             std::numeric_limits<unsigned>::max()
         };
         mECSMan.template CreateEntity<AsteroidsSpawner_t>(left_asteroid_spawner_phy_args,
@@ -181,15 +181,17 @@ struct GameFactory_t
 
     constexpr auto CreateAsteroid(Vector2 pos, float rot)
     {
-        auto texture { GetRandomValue(0, 100) % 2 ? mResMan.GetTextureAsteroid() : mResMan.GetTextureAsteroidSmall() };
-        rot += GetRandomValue(-15, 15);
+        auto texture { GetRandomValue(0, 1) ? mResMan.GetTextureAsteroid() : mResMan.GetTextureAsteroidSmall() };
+        rot += GetRandomValue(-30, 30);
+        auto size { (float)GetRandomValue(1, 2) };
+        auto vel { (float)GetRandomValue(60, 150) };
         const Args::Arguments_t ren_args {
             Args::For_v<RenderComponent_t>,
             texture,
             Rectangle {
                 0.0f, 0.0f,
                 texture.width / 16.0f,
-                texture.height / 2.0f
+                texture.height * 1.0f
             }
         };
         const Args::Arguments_t anim_args {
@@ -201,11 +203,14 @@ struct GameFactory_t
         const Args::Arguments_t phy_args {
             Args::For_v<PhysicsComponent_t>,
             pos,
-            Vector2 { -400.0f * -std::sin(rot * DEG2RAD), -400.0f * std::cos(rot * DEG2RAD) },
+            Vector2 { -vel * -std::sin(rot * DEG2RAD), -vel * std::cos(rot * DEG2RAD) },
             Vector2 {  },
             Vector2 { texture.width / 32.0f, texture.height / 2.0f },
             0.0f,
-            rot
+            rot,
+            0.0f,
+            0.0f,
+            size
         };
         mECSMan.template CreateEntity<Asteroids_t>(ren_args, anim_args, phy_args);
     }
@@ -267,8 +272,12 @@ struct GameFactory_t
             player_pos,
             Vector2 {  },
             Vector2 {  },
-            Vector2 { player_sprite.width / 2.0f, player_sprite.height / 2.0f },
-            0.8f
+            Vector2 { player_sprite.width * 0.58f / 2.0f, player_sprite.height * 0.58f / 2.0f },
+            0.8f,
+            0.0f,
+            0.0f,
+            0.0f,
+            0.58f
         };
         const Args::Arguments_t bullet_spawner_inp_args {
             Args::For_v<InputEnablerComponent_t>,

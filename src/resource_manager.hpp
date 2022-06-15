@@ -11,8 +11,8 @@ struct ResourceManager_t : ECS::Uncopyable_t
 {
     explicit ResourceManager_t()
         : mPlayer        { LoadTexture("./resources/images/ship.png") },
-          mRocketBottom  { LoadTexture("./resources/images/rocket_bottom1.png") },
-          mRocketFront   { LoadTexture("./resources/images/rocket_front1.png") },
+          mRocketBottom  { LoadTexture("./resources/images/rocket_bottom.png") },
+          mRocketFront   { LoadTexture("./resources/images/rocket_front.png") },
           mBulletFire    { LoadTexture("./resources/images/fire_red.png") },
           mAsteroid      { LoadTexture("./resources/images/rock.png") },
           mAsteroidSmall { LoadTexture("./resources/images/rock_small.png") },

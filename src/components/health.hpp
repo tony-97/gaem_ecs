@@ -2,5 +2,5 @@
 
 struct HealthComponent_t
 {
-    int health { 1 };
+    int health { 100 };
 };

@@ -17,8 +17,8 @@
 
 int main()
 {
-    constexpr int screen_width  { 1280 };
-    constexpr int screen_height { 720 };
+    constexpr int screen_width  { 800 };
+    constexpr int screen_height { 600 };
 
     RenderSystem_t ren_sys { screen_width, screen_height, "GAEM ECS!" };
     InputSystem_t inp_sys {  };

@@ -12,9 +12,9 @@ struct ColliderSystem_t
     {
         ecs_man.template ForEachEntity<Renderable_t>([&](const auto& ren, auto& phy, auto&&) {
                 const auto polar_v1 { to_polar_vector({ 0.0f, 0.0f }, phy.orig, phy.ang) };
-                const auto polar_v2 { to_polar_vector({ ren.crop_rec.width, 0.0f }, phy.orig, phy.ang) };
-                const auto polar_v3 { to_polar_vector({ 0.0f, ren.crop_rec.height }, phy.orig, phy.ang) };
-                const auto polar_v4 { to_polar_vector({ ren.crop_rec.width, ren.crop_rec.height }, phy.orig, phy.ang) };
+                const auto polar_v2 { to_polar_vector({ ren.crop_rec.width * phy.size, 0.0f }, phy.orig, phy.ang) };
+                const auto polar_v3 { to_polar_vector({ 0.0f, ren.crop_rec.height * phy.size }, phy.orig, phy.ang) };
+                const auto polar_v4 { to_polar_vector({ ren.crop_rec.width * phy.size, ren.crop_rec.height * phy.size }, phy.orig, phy.ang) };
                 const auto v1 { to_rect_vector(polar_v1, phy.pos) };
                 const auto v2 { to_rect_vector(polar_v2, phy.pos) };
                 const auto v3 { to_rect_vector(polar_v3, phy.pos) };

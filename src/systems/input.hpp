@@ -19,7 +19,7 @@ struct InputSystem_t
     template<class ECSMan_t, class GFact_t>
     constexpr void update(ECSMan_t& ecs_man, GFact_t& gfact)
     {
-        ecs_man.template ForEachEntity<PlayerInput_t>([&](const auto& inp, auto& phy, auto&&) {
+        ecs_man.template ForEachEntity<PlayerInput_t>([&](const auto& inp, auto& phy, auto&& ent) {
                     phy.acc.x = 0.0f;
                     phy.acc.y = 0.0f;
                     phy.a = 0.0f;
@@ -32,6 +32,12 @@ struct InputSystem_t
                     if (IsKeyDown(inp.down)) {
                         phy.acc.y += +100.0f * std::cos(phy.ang * DEG2RAD);
                         phy.acc.x += +100.0f * -std::sin(phy.ang * DEG2RAD);
+                    }
+                    if constexpr (ECS::IsInstanceOf_v<Player_t, decltype(ent)>) {
+                        auto& health = ecs_man.template GetComponent<HealthComponent_t>(ent);
+                        if (IsKeyDown(KEY_L)) {
+                            --health.health;
+                        }
                     }
                 });
         ecs_man.template ForEachEntity<InputEnabler_t>([&](const auto& rock_inp, auto&& ent) {

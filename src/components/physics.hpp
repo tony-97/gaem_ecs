@@ -12,4 +12,5 @@ struct PhysicsComponent_t
     float ang    {  };
     float a  {  };
     float w  {  };
+    float size   { 1.0f };
 };
