@@ -16,10 +16,10 @@ struct InputSystem_t
 {
     constexpr explicit InputSystem_t() = default;
 
-    template<class ECSMan_t, class GFact_t>
-    constexpr void update(ECSMan_t& ecs_man, GFact_t& gfact)
+    template<class ECSMan_t, class GameCtx_t>
+    constexpr static void update(ECSMan_t& ecs_man, GameCtx_t& gctx)
     {
-        ecs_man.template ForEachEntity<PlayerInput_t>([&](const auto& inp, auto& phy, auto&& ent) {
+        ecs_man.template ForEachEntity<PlayerInput_t>([&](const auto& inp, auto& phy, auto&&) {
                     phy.acc.x = 0.0f;
                     phy.acc.y = 0.0f;
                     phy.a = 0.0f;
@@ -33,18 +33,12 @@ struct InputSystem_t
                         phy.acc.y += +100.0f * std::cos(phy.ang * DEG2RAD);
                         phy.acc.x += +100.0f * -std::sin(phy.ang * DEG2RAD);
                     }
-                    if constexpr (ECS::IsInstanceOf_v<Player_t, decltype(ent)>) {
-                        auto& health = ecs_man.template GetComponent<HealthComponent_t>(ent);
-                        if (IsKeyDown(KEY_L)) {
-                            --health.health;
-                        }
-                    }
                 });
-        ecs_man.template ForEachEntity<InputEnabler_t>([&](const auto& rock_inp, auto&& ent) {
-                    if (IsKeyDown(rock_inp.enable)) {
-                        gfact.Enable(ent, rock_inp.type);
+        ecs_man.template ForEachEntity<InputEnabler_t>([&](const auto& inp, auto&& ent) {
+                    if (IsKeyDown(inp.enable)) {
+                        gctx.Enable(ent, inp.type);
                     } else {
-                        gfact.Disable(ent, rock_inp.type);
+                        gctx.Disable(ent, inp.type);
                     }
                 });
     }

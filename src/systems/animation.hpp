@@ -4,10 +4,10 @@
 
 struct AnimationSystem_t
 {
-    explicit AnimationSystem_t() = default;
+    constexpr explicit AnimationSystem_t() = default;
 
     template<class ECSMan_t>
-    constexpr void update(ECSMan_t& ecs_man, float frame_time)
+    constexpr static void update(ECSMan_t& ecs_man, float frame_time)
     {
         ecs_man.template ForEachEntity<Animable_t>([&](auto& anim, auto& ren, auto&&){
                     if (anim.elapsed >= anim.frame_time) {

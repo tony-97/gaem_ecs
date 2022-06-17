@@ -12,8 +12,8 @@
 #include <components/input_enabler.hpp>
 #include <components/health.hpp>
 #include <components/bullet.hpp>
-#include <components/collider.hpp>
 #include <components/spawn.hpp>
+#include <components/charge.hpp>
 
 #include <cmath>
 
@@ -59,7 +59,16 @@ struct GameFactory_t
                 break;
             }
         } else if constexpr (ECS::IsInstanceOf_v<BulletSpawnerOff_t, decltype(ent)>) {
-            mECSMan.template TransformTo<BulletSpawnerOn_t>(ent, GetBulletSpawnerSpawnArgs());
+            auto& chrg { mECSMan.template GetComponent<ChargeComponent_t>(ent) };
+            Args::Arguments_t spwn_args {
+                Args::For_v<SpawnComponent_t>,
+                Shoot,
+                0.1f,
+                0.15f,
+                chrg.charged,
+            };
+            chrg.charged = 0;
+            mECSMan.template TransformTo<BulletSpawnerOn_t>(ent, spwn_args);
         }
     }
 
@@ -69,6 +78,9 @@ struct GameFactory_t
         if constexpr (ECS::IsInstanceOf_v<RocketOn_t, decltype(ent)>) {
             mECSMan.template TransformTo<RocketOff_t>(ent);
         } else if constexpr (ECS::IsInstanceOf_v<BulletSpawnerOn_t, decltype(ent)>) {
+            auto& chrg { mECSMan.template GetComponent<ChargeComponent_t>(ent) };
+            auto& spwn { mECSMan.template GetComponent<SpawnComponent_t>(ent) };
+            chrg.charged = spwn.spawned;
             mECSMan.template TransformTo<BulletSpawnerOff_t>(ent);
         }
     }
@@ -183,7 +195,7 @@ struct GameFactory_t
     {
         auto texture { GetRandomValue(0, 1) ? mResMan.GetTextureAsteroid() : mResMan.GetTextureAsteroidSmall() };
         rot += GetRandomValue(-30, 30);
-        auto size { (float)GetRandomValue(1, 2) };
+        auto size { (float)GetRandomValue(1, 3) };
         auto vel { (float)GetRandomValue(60, 150) };
         const Args::Arguments_t ren_args {
             Args::For_v<RenderComponent_t>,
@@ -205,7 +217,7 @@ struct GameFactory_t
             pos,
             Vector2 { -vel * -std::sin(rot * DEG2RAD), -vel * std::cos(rot * DEG2RAD) },
             Vector2 {  },
-            Vector2 { texture.width / 32.0f, texture.height / 2.0f },
+            Vector2 { texture.width * size / 32.0f, texture.height * size / 2.0f },
             0.0f,
             rot,
             0.0f,
@@ -284,29 +296,18 @@ struct GameFactory_t
             KEY_SPACE,
             InputEnablerComponent_t::BULLET_SPAWNER
         };
-
-        const Args::Arguments_t left_bullet_spawner_phy_args {
-            Args::For_v<PhysicsComponent_t>,
-            Vector2 { player_pos.x - 23, player_pos.y + 5 },
-            Vector2 {  },
-            Vector2 {  },
-            Vector2 { 23, -5 },
-            0.8f,
-        };
-        const Args::Arguments_t right_bullet_spawner_phy_args {
-            Args::For_v<PhysicsComponent_t>,
-            Vector2 { player_pos.x + 23, player_pos.y + 5 },
-            Vector2 {  },
-            Vector2 {  },
-            Vector2 { -23, -5 },
-            0.8f,
+        const Args::Arguments_t bullet_spawner_chrg_args {
+            Args::For_v<ChargeComponent_t>,
+            0.5f,
+            0.0f,
+            30u,
+            30u
         };
         mECSMan.template CreateEntity<Player_t>(player_ren_args,
                                                 player_phy_args);
         mECSMan.template CreateEntity<BulletSpawnerOff_t>(bullet_spawner_inp_args,
-                                                          left_bullet_spawner_phy_args);
-        mECSMan.template CreateEntity<BulletSpawnerOff_t>(bullet_spawner_inp_args,
-                                                          right_bullet_spawner_phy_args);
+                                                          player_phy_args,
+                                                          bullet_spawner_chrg_args);
         mECSMan.template CreateEntity<RocketOff_t>(rocket_bottom_inp_args,
                                                    player_phy_args);
         mECSMan.template CreateEntity<RocketOff_t>(rocket_front_inp_args,
