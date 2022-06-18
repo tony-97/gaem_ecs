@@ -1,8 +1,8 @@
 # Makefile config
-RAYLIB_PATH ?= /home/tony/git/raylib
-export WFLAGS    := -Wno-missing-braces -Wmissing-field-initializers
+RAYLIB_PATH ?= ../raylib
+export WFLAGS    := -Wno-missing-braces -Wno-missing-field-initializers
 export LDFLAGS   := -L$(RAYLIB_PATH)
-export LDLIBS    := -lraylib
+export LDLIBS    := -lraylib -lwinmm -lgdi32
 export CPPFLAGS  := -I../evolution/src -I../evolution/external -I$(RAYLIB_PATH)/src -I./src
 export EXEC_NAME ?= game
 export CXXFLAGS  := -std=c++17 -fno-rtti -fno-exceptions
@@ -21,6 +21,7 @@ ifeq ($(BUILD_MODE),RELEASE)
 else
 	BUILD_NAME := debug
 	CXXFLAGS   += -g -ggdb -O0
+	export WFLAGS += -Wno-unused-parameter
 ifeq ($(ASAN),1)
 	export ASAN_OPTIONS := strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1
 	export LDFLAGS := $(LDFLAGS) $(ASAN_FLAGS)

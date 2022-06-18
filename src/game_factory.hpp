@@ -28,63 +28,6 @@ struct GameFactory_t
         
     }
 
-    static constexpr auto Shoot(int x, int y, float rot, void* gfact)
-    {
-        auto gfact_ptr = reinterpret_cast<GameFactory_t*>(gfact);
-        gfact_ptr->CreateFireBullet({ static_cast<float>(x), static_cast<float>(y) }, rot);
-    }
-
-    static constexpr auto SpawnAsteroids(int x, int y, float rot, void* gfact)
-    {
-        auto gfact_ptr = reinterpret_cast<GameFactory_t*>(gfact);
-        gfact_ptr->CreateAsteroid({ static_cast<float>(x), static_cast<float>(y) }, rot);
-    }
-
-    template<class Ent_t>
-    constexpr auto Enable(Ent_t&& ent, InputEnablerComponent_t::Object_t type)
-    {
-        if constexpr (ECS::IsInstanceOf_v<RocketOff_t, decltype(ent)>) {
-            switch (type) {
-            case InputEnablerComponent_t::ROCKET_FRONT:
-              mECSMan.template TransformTo<RocketOn_t>(ent,
-                                                     GetRocketFrontRenArgs(),
-                                                     GetRocketAnimArgs());
-                break;
-            case InputEnablerComponent_t::ROCKET_BOTTOM:
-              mECSMan.template TransformTo<RocketOn_t>(ent,
-                                                     GetRocketBottomRenArgs(),
-                                                     GetRocketAnimArgs());
-                break;
-            default:
-                break;
-            }
-        } else if constexpr (ECS::IsInstanceOf_v<BulletSpawnerOff_t, decltype(ent)>) {
-            auto& chrg { mECSMan.template GetComponent<ChargeComponent_t>(ent) };
-            Args::Arguments_t spwn_args {
-                Args::For_v<SpawnComponent_t>,
-                Shoot,
-                0.1f,
-                0.15f,
-                chrg.charged,
-            };
-            chrg.charged = 0;
-            mECSMan.template TransformTo<BulletSpawnerOn_t>(ent, spwn_args);
-        }
-    }
-
-    template<class Ent_t>
-    constexpr auto Disable(Ent_t&& ent, InputEnablerComponent_t::Object_t)
-    {
-        if constexpr (ECS::IsInstanceOf_v<RocketOn_t, decltype(ent)>) {
-            mECSMan.template TransformTo<RocketOff_t>(ent);
-        } else if constexpr (ECS::IsInstanceOf_v<BulletSpawnerOn_t, decltype(ent)>) {
-            auto& chrg { mECSMan.template GetComponent<ChargeComponent_t>(ent) };
-            auto& spwn { mECSMan.template GetComponent<SpawnComponent_t>(ent) };
-            chrg.charged = spwn.spawned;
-            mECSMan.template TransformTo<BulletSpawnerOff_t>(ent);
-        }
-    }
-
     constexpr auto GetPlayerCropRect() const
     {
         const auto player_sprite { mResMan.GetTexturePlayer() };
@@ -127,7 +70,9 @@ struct GameFactory_t
     {
         return Args::Arguments_t {
             Args::For_v<SpawnComponent_t>,
-            Shoot,
+            [&](Vector2& pos, float rot) {
+                CreateFireBullet(pos, rot);
+            },
             0.1f,
             0.15f,
             30u,
@@ -176,7 +121,9 @@ struct GameFactory_t
         };
         const Args::Arguments_t asteroid_spawner_spawn_args {
             Args::For_v<SpawnComponent_t>,
-            SpawnAsteroids,
+            [&](Vector2 pos, float rot) {
+                CreateAsteroid(pos, rot);
+            },
             7.0f,
             7.1f,
             std::numeric_limits<unsigned>::max()
@@ -284,12 +231,14 @@ struct GameFactory_t
             player_pos,
             Vector2 {  },
             Vector2 {  },
-            Vector2 { player_sprite.width * 0.58f / 2.0f, player_sprite.height * 0.58f / 2.0f },
-            0.8f,
+            Vector2 { 
+                player_sprite.width  * PLAYER_SCALE / 2.0f,
+                player_sprite.height * PLAYER_SCALE / 2.0f },
+            PLAYER_FRICTION,
             0.0f,
             0.0f,
             0.0f,
-            0.58f
+            PLAYER_SCALE
         };
         const Args::Arguments_t bullet_spawner_inp_args {
             Args::For_v<InputEnablerComponent_t>,
@@ -298,10 +247,10 @@ struct GameFactory_t
         };
         const Args::Arguments_t bullet_spawner_chrg_args {
             Args::For_v<ChargeComponent_t>,
-            0.5f,
+            CHARGE_INTERVAL,
             0.0f,
-            30u,
-            30u
+            MAX_BULLETS,
+            MAX_BULLETS
         };
         mECSMan.template CreateEntity<Player_t>(player_ren_args,
                                                 player_phy_args);
@@ -316,4 +265,10 @@ struct GameFactory_t
 private:
     ECSMan_t& mECSMan {  };
     const ResMan_t& mResMan {  };
+
+    constexpr static inline float PLAYER_SCALE { 0.58f };
+    constexpr static inline float PLAYER_FRICTION { 0.8f };
+
+    constexpr static inline unsigned MAX_BULLETS { 30u };
+    constexpr static inline float CHARGE_INTERVAL { 0.5f };
 };
