@@ -24,10 +24,14 @@ struct ResourceManager_t : ECS::Uncopyable_t
 
     ~ResourceManager_t()
     {
-        UnloadTexture(mBackground);
-        UnloadTexture(mRocketBottom);
-        UnloadTexture(mRocketFront);
-        UnloadTexture(mPlayer);
+        UnloadSound(mLaser);
+        UnloadTexture(mPlayer       );
+        UnloadTexture(mRocketBottom );
+        UnloadTexture(mRocketFront  );
+        UnloadTexture(mBulletFire   );
+        UnloadTexture(mAsteroid     );     
+        UnloadTexture(mAsteroidSmall);
+        UnloadTexture(mBackground   );
         CloseAudioDevice();
     }
 

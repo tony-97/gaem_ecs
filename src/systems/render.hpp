@@ -47,7 +47,7 @@ struct RenderSystem_t
                     DrawTexturePro(ren.sprite, ren.crop_rec, dest_recy, phy.orig, phy.ang, RAYWHITE);
                     //// xy reflection
                     DrawTexturePro(ren.sprite, ren.crop_rec, dest_recxy, phy.orig, phy.ang, RAYWHITE);
-                    DrawCircleV(phy.pos, phy.size, GREEN);
+                    DrawCircleLines(phy.pos.x, phy.pos.y, ren.sprite.width * phy.size / 16, GREEN);
                     DrawText(TextFormat("%f", phy.vel.y), phy.pos.x, phy.pos.y, 10, RED);
                 });
         DrawRectangle(0, mHeight, mWidth, mStatusBarHeight, BLACK);
@@ -69,7 +69,7 @@ struct RenderSystem_t
             if constexpr (ECS::IsInstanceOf_v<Player_t, decltype(ent)>) {
                 DrawRectangle(10, mHeight + 10 + 15 + 5, 300, 15, WHITE);
                 DrawRectangle(10, mHeight + 10 + 15 + 5, 300 * (hel.health / 100.0f), 15, GREEN);
-                DrawText(TextFormat("%d", hel.health), 315, mHeight + 10 + 15 + 5, 15, YELLOW);
+                DrawText(TextFormat("%d", hel.health), 315, mHeight + 10 + 15 + 5, 15, GREEN);
             }
         });
         DrawFPS(10, 10);

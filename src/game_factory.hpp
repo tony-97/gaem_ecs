@@ -14,6 +14,7 @@
 #include <components/bullet.hpp>
 #include <components/spawn.hpp>
 #include <components/charge.hpp>
+#include <components/collider.hpp>
 
 #include <cmath>
 
@@ -61,7 +62,6 @@ struct GameFactory_t
         return Args::Arguments_t {
             Args::For_v<AnimationComponent_t>,
             7,
-            0,
             0.1f,
         };
     }
@@ -71,7 +71,7 @@ struct GameFactory_t
         return Args::Arguments_t {
             Args::For_v<SpawnComponent_t>,
             [&](Vector2& pos, float rot) {
-                CreateFireBullet(pos, rot);
+                CreateBullet(pos, rot);
             },
             0.1f,
             0.15f,
@@ -156,7 +156,6 @@ struct GameFactory_t
         const Args::Arguments_t anim_args {
             Args::For_v<AnimationComponent_t>,
             16,
-            0,
             0.1f
         };
         const Args::Arguments_t phy_args {
@@ -171,10 +170,14 @@ struct GameFactory_t
             0.0f,
             size
         };
-        mECSMan.template CreateEntity<Asteroids_t>(ren_args, anim_args, phy_args);
+        const Args::Arguments_t coll_args {
+            Args::For_v<ColliderComponent_t>,
+            texture.width / 16,
+        };
+        mECSMan.template CreateEntity<Asteroids_t>(ren_args, anim_args, phy_args, coll_args);
     }
 
-    constexpr auto CreateFireBullet(Vector2 pos, float rot)
+    constexpr auto CreateBullet(Vector2 pos, float rot)
     {
         PlaySoundMulti(mResMan.GetLaserSound());
         const auto texture { mResMan.GetTextureBulletFire() };
@@ -190,7 +193,6 @@ struct GameFactory_t
         const Args::Arguments_t anim_args {
             Args::For_v<AnimationComponent_t>,
             16,
-            0,
             0.1f,
         };
         rot += GetRandomValue(-2, 2);
@@ -203,7 +205,11 @@ struct GameFactory_t
             0.0f,
             rot
         };
-        mECSMan.template CreateEntity<Bullet_t>(ren_args, anim_args, phy_args);
+        const Args::Arguments_t coll_args {
+            Args::For_v<ColliderComponent_t>,
+            texture.width / 16,
+        };
+        mECSMan.template CreateEntity<Bullet_t>(ren_args, anim_args, phy_args, coll_args);
     }
 
     constexpr auto CreatePlayer(int screen_width, int screen_height) -> void
@@ -215,16 +221,6 @@ struct GameFactory_t
             Args::For_v<RenderComponent_t>,
             player_sprite,
             crop_rec,
-        };
-        const Args::Arguments_t rocket_bottom_inp_args {
-            Args::For_v<InputEnablerComponent_t>,
-            KEY_W,
-            InputEnablerComponent_t::ROCKET_BOTTOM
-        };
-        const Args::Arguments_t rocket_front_inp_args {
-            Args::For_v<InputEnablerComponent_t>,
-            KEY_S,
-            InputEnablerComponent_t::ROCKET_FRONT
         };
         const Args::Arguments_t player_phy_args {
             Args::For_v<PhysicsComponent_t>,
@@ -240,6 +236,20 @@ struct GameFactory_t
             0.0f,
             PLAYER_SCALE
         };
+        const Args::Arguments_t player_coll_args {
+            Args::For_v<ColliderComponent_t>,
+            player_sprite.width
+        };
+        const Args::Arguments_t rocket_bottom_inp_args {
+            Args::For_v<InputEnablerComponent_t>,
+            KEY_W,
+            InputEnablerComponent_t::ROCKET_BOTTOM
+        };
+        const Args::Arguments_t rocket_front_inp_args {
+            Args::For_v<InputEnablerComponent_t>,
+            KEY_S,
+            InputEnablerComponent_t::ROCKET_FRONT
+        };
         const Args::Arguments_t bullet_spawner_inp_args {
             Args::For_v<InputEnablerComponent_t>,
             KEY_SPACE,
@@ -253,7 +263,8 @@ struct GameFactory_t
             MAX_BULLETS
         };
         mECSMan.template CreateEntity<Player_t>(player_ren_args,
-                                                player_phy_args);
+                                                player_phy_args,
+                                                player_coll_args);
         mECSMan.template CreateEntity<BulletSpawnerOff_t>(bullet_spawner_inp_args,
                                                           player_phy_args,
                                                           bullet_spawner_chrg_args);

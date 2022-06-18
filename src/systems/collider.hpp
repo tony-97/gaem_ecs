@@ -5,11 +5,11 @@
 
 struct ColliderSystem_t
 {
-    template<class PhyCmpt_t>
-    constexpr static bool collide(PhyCmpt_t phy1, PhyCmpt_t phy2)
+    template<class PhyCmpt_t, class CollCmp_t>
+    constexpr static bool collide(CollCmp_t coll1, const PhyCmpt_t& phy1, CollCmp_t coll2, const PhyCmpt_t& phy2)
     {
         auto sqdistp1p2 { (phy1.pos.x - phy2.pos.x) * (phy1.pos.x - phy2.pos.x) + (phy1.pos.y - phy2.pos.y) * (phy1.pos.y - phy2.pos.y) };
-        auto sqdistr1r2 { phy1.size * phy2.size };
+        auto sqdistr1r2 { phy1.size * phy2.size * coll1.size * coll2.size };
         return sqdistr1r2 > sqdistp1p2;
     }
 
@@ -51,16 +51,16 @@ struct ColliderSystem_t
                         phy.pos.y -= screen_height;
                     }
                 });
-        ecs_man.template ForEachEntity<Movable_t>([&](auto& phy_ast, auto&& ast) {
+        ecs_man.template ForEachEntity<Collidable_t>([&](auto& col_ast, auto& phy_ast, auto&& ast) {
             if constexpr (ECS::IsInstanceOf_v<Asteroids_t, decltype(ast)>) {
-                ecs_man.template ForEachEntity<Movable_t>([&](auto& phy_pla, auto&& pla) {
+                ecs_man.template ForEachEntity<Collidable_t>([&](auto& col_ast, auto& phy_pla, auto&& pla) {
                     if constexpr (ECS::IsInstanceOf_v<Player_t, decltype(pla)>) {
                         
                     }
                 });
-                ecs_man.template ForEachEntity<Movable_t>([&](auto& phy_bull, auto&& bull) {
+                ecs_man.template ForEachEntity<Collidable_t>([&](auto& col_bull, auto& phy_bull, auto&& bull) {
                     if constexpr (ECS::IsInstanceOf_v<Bullet_t, decltype(bull)>) {
-                        if (collide(phy_ast, phy_bull)) {
+                        if (collide(col_ast, phy_ast, col_bull, phy_bull)) {
                             auto& hel { ecs_man.template GetComponent<HealthComponent_t>(bull) };
                             hel.health = 0;
                         }

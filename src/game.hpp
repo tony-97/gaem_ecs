@@ -51,7 +51,7 @@ struct Game
             Args::Arguments_t spwn_args {
                 Args::For_v<SpawnComponent_t>,
                 [&](Vector2 pos, float rot) {
-                    game_fact.CreateFireBullet(pos, rot);
+                    game_fact.CreateBullet(pos, rot);
                 },
                 0.1f,
                 0.15f,
@@ -87,7 +87,7 @@ struct Game
             bull_sys.update(ecs_man, GetFrameTime());
             spawn_sys.update(ecs_man, GetFrameTime());
             chrg_sys.update(ecs_man, GetFrameTime());
-        }    
+        }
     }
 
 private:
