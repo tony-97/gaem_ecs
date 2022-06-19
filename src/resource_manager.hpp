@@ -16,10 +16,11 @@ struct ResourceManager_t : ECS::Uncopyable_t
           mBulletFire    { LoadTexture("./resources/images/fire_red.png") },
           mAsteroid      { LoadTexture("./resources/images/rock.png") },
           mAsteroidSmall { LoadTexture("./resources/images/rock_small.png") },
-          mBackground    { LoadTexture("./resources/images/background.png") }
+          mBackground    { LoadTexture("./resources/images/background.png") },
+          mAsteroidExplosion { LoadTexture("./resources/images/type_C.png") }
     {
         InitAudioDevice();
-        mLaser = LoadSound("./resources/sounds/laser_sound.wav");
+        mLaser = LoadSound("./resources/images/laser_sound.wav");
     }
 
     ~ResourceManager_t()
@@ -32,6 +33,7 @@ struct ResourceManager_t : ECS::Uncopyable_t
         UnloadTexture(mAsteroid     );     
         UnloadTexture(mAsteroidSmall);
         UnloadTexture(mBackground   );
+        UnloadTexture(mAsteroidExplosion);
         CloseAudioDevice();
     }
 
@@ -44,6 +46,7 @@ struct ResourceManager_t : ECS::Uncopyable_t
     Texture2D GetTextureAsteroidSmall() const { return mAsteroidSmall; }
     Texture2D GetTextureBulletFire()    const { return mBulletFire;    }
     Texture2D GetTextureBackground()    const { return mBackground;    }
+    Texture2D GetTextureAstroidExplosion() const { return mAsteroidExplosion; }
 private:
     Sound  mLaser {  };
 
@@ -54,4 +57,5 @@ private:
     const Texture2D mAsteroid      {  };
     const Texture2D mAsteroidSmall {  };
     const Texture2D mBackground    {  };
+    const Texture2D mAsteroidExplosion {  };
 };

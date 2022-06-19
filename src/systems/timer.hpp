@@ -2,14 +2,14 @@
 
 #include <types.hpp>
 
-struct BulletSystem_t
+struct TimerSystem_t
 {
-    constexpr explicit BulletSystem_t() = default;
+    constexpr explicit TimerSystem_t() = default;
 
     template<class ECSMan_t>
     constexpr static void update(ECSMan_t& ecs_man, float elapsed_time)
     {
-        ecs_man.template ForEachEntity<Bulletable_t>([&](auto& bull, auto& hel, auto&&) {
+        ecs_man.template ForEachEntity<Timeable_t>([&](auto& bull, auto& hel, auto&&) {
                     if (bull.time_alive < 0) {
                         hel.health = 0;
                     }

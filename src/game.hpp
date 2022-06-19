@@ -9,7 +9,7 @@
 #include "systems/animation.hpp"
 #include "systems/collider.hpp"
 #include "systems/health.hpp"
-#include "systems/bullet.hpp"
+#include "systems/timer.hpp"
 #include "systems/spawn.hpp"
 #include "systems/charge.hpp"
 
@@ -23,8 +23,12 @@ struct Game
     }
 
     template<class Ent_t>
-    void Destroy(const Ent_t& ent)
+    constexpr void Destroy(const Ent_t& ent)
     {
+        if constexpr (ECS::IsInstanceOf_v<Asteroids_t, decltype(ent)>) {
+            auto& phy { ecs_man.template GetComponent<PhysicsComponent_t>(ent) };
+            game_fact.CreateAsteroidExplosion(phy.pos, phy.ang, phy.size);
+        }
         ecs_man.Destroy(ent);
     }
 
@@ -84,12 +88,11 @@ struct Game
             phy_sys.update(ecs_man, GetFrameTime());
             col_sys.update(ecs_man, screen_width, screen_height);
             hel_sys.update(ecs_man, *this);
-            bull_sys.update(ecs_man, GetFrameTime());
+            tim_sys .update(ecs_man, GetFrameTime());
             spawn_sys.update(ecs_man, GetFrameTime());
             chrg_sys.update(ecs_man, GetFrameTime());
         }
     }
-
 private:
     static constexpr inline int screen_width  { 800 };
     static constexpr inline int screen_height { 600 };
@@ -100,7 +103,7 @@ private:
     PhysicsSystem_t   phy_sys   {  };
     ColliderSystem_t  col_sys   {  };
     HealthSystem_t    hel_sys   {  };
-    BulletSystem_t    bull_sys  {  };
+    TimerSystem_t     tim_sys   {  };
     SpawnSystem_t     spawn_sys {  };
     ChargeSystem_t    chrg_sys  {  };
 

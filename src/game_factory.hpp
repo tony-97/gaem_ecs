@@ -11,7 +11,7 @@
 #include <components/player_input.hpp>
 #include <components/input_enabler.hpp>
 #include <components/health.hpp>
-#include <components/bullet.hpp>
+#include <components/timer.hpp>
 #include <components/spawn.hpp>
 #include <components/charge.hpp>
 #include <components/collider.hpp>
@@ -175,6 +175,39 @@ struct GameFactory_t
             texture.width / 16,
         };
         mECSMan.template CreateEntity<Asteroids_t>(ren_args, anim_args, phy_args, coll_args);
+    }
+
+    constexpr auto CreateAsteroidExplosion(Vector2 pos, float rot, float scale) {
+        const Texture2D sprite { mResMan.GetTextureAstroidExplosion() };
+        const Args::Arguments_t ren_args {
+            Args::For_v<RenderComponent_t>,
+            sprite,
+            Rectangle {
+                0.0f, 0.0f, 256.0f, 256.0f
+            }
+        };
+        const Args::Arguments_t anim_args {
+            Args::For_v<AnimationComponent_t>,
+            48,
+            0.05f,
+        };
+        const Args::Arguments_t tim_args {
+            Args::For_v<TimerComponent_t>,
+            48 * 0.05f,
+        };
+        const Args::Arguments_t phy_args {
+            Args::For_v<PhysicsComponent_t>,
+            pos,
+            Vector2 {  },
+            Vector2 {  },
+            Vector2 { (sprite.width / (48 * 2.0f)) * scale * 0.5f, (sprite.height / 2.0f) * scale * 0.5f },
+            1.0f,
+            rot,
+            0.0f,
+            0.0f,
+            scale * 0.5f
+        };
+        mECSMan.template CreateEntity<Explosion_t>(ren_args, anim_args, tim_args, phy_args);
     }
 
     constexpr auto CreateBullet(Vector2 pos, float rot)
