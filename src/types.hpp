@@ -40,7 +40,7 @@ using Bullet_t           = ECS::Derived_t<Animable_t, Movable_t, Renderable_t, B
 using BulletSpawnerOn_t  = ECS::Derived_t<Spawner_t, Movable_t, InputEnabler_t, PlayerInput_t, Chargeable_t>;
 using BulletSpawnerOff_t = ECS::Derived_t<Movable_t, InputEnabler_t, PlayerInput_t, Chargeable_t>;
 
-using Asteroids_t        = ECS::Derived_t<Animable_t, Movable_t, Renderable_t, AsteroidsTag_t, Collidable_t>;
+using Asteroids_t        = ECS::Derived_t<Animable_t, Movable_t, Renderable_t, AsteroidsTag_t, Alive_t, Collidable_t>;
 using AsteroidsSpawner_t = ECS::Derived_t<Spawner_t, Movable_t>;
 using RocketOn_t         = ECS::Derived_t<Animable_t, Movable_t, InputEnabler_t, PlayerInput_t, Alive_t>;
 using RocketOff_t        = ECS::Derived_t<Movable_t, InputEnabler_t, PlayerInput_t, Alive_t>;
