@@ -61,8 +61,9 @@ struct ColliderSystem_t
                 ecs_man.template ForEachEntity<Collidable_t>([&](auto& col_bull, auto& phy_bull, auto&& bull) {
                     if constexpr (ECS::IsInstanceOf_v<Bullet_t, decltype(bull)>) {
                         if (collide(col_ast, phy_ast, col_bull, phy_bull)) {
-                            auto& hel { ecs_man.template GetComponent<HealthComponent_t>(bull) };
-                            hel.health = 0;
+                            auto& hel1 { ecs_man.template GetComponent<HealthComponent_t>(bull) };
+                            auto& hel2 { ecs_man.template GetComponent<HealthComponent_t>(ast) };
+                            hel2.health = hel1.health = 0;
                         }
                     }
                 });
