@@ -47,8 +47,6 @@ struct RenderSystem_t
                     DrawTexturePro(ren.sprite, ren.crop_rec, dest_recy, phy.orig, phy.ang, RAYWHITE);
                     //// xy reflection
                     DrawTexturePro(ren.sprite, ren.crop_rec, dest_recxy, phy.orig, phy.ang, RAYWHITE);
-                    DrawCircleLines(phy.pos.x, phy.pos.y, ren.sprite.width * phy.size / 16, GREEN);
-                    DrawText(TextFormat("%f", phy.vel.y), phy.pos.x, phy.pos.y, 10, RED);
                 });
         DrawRectangle(0, mHeight, mWidth, mStatusBarHeight, BLACK);
         ecs_man.template ForEachEntity<Chargeable_t>([&](auto& chrg, auto&& ent){
