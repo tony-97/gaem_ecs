@@ -14,8 +14,8 @@ struct RenderSystem_t
     explicit RenderSystem_t(int width, int height, std::string_view title)
         : mWidth { width }, mHeight { height }
     {
-        InitWindow(width, height + mStatusBarHeight, title.data());
-        SetTargetFPS(60);
+        InitWindow(width, height, title.data());
+        SetTargetFPS(240);
     }
 
     ~RenderSystem_t()
@@ -48,7 +48,6 @@ struct RenderSystem_t
                     //// xy reflection
                     DrawTexturePro(ren.sprite, ren.crop_rec, dest_recxy, phy.orig, phy.ang, RAYWHITE);
                 });
-        DrawRectangle(0, mHeight, mWidth, mStatusBarHeight, BLACK);
         ecs_man.template ForEachEntity<Chargeable_t>([&](auto& chrg, auto&& ent){
                     float percent { static_cast<float>(chrg.max_charge) };
                     unsigned bullets {  };
@@ -59,22 +58,21 @@ struct RenderSystem_t
                         bullets = chrg.charged;
                     }
                     percent = bullets / percent;
-                    DrawRectangle(10, mHeight + 10, 300, 15, WHITE);
-                    DrawRectangle(10, mHeight + 10, 300 * percent, 15, YELLOW);
-                    DrawText(TextFormat("%d", bullets), 315, mHeight + 10, 15, YELLOW);
+                    DrawRectangle(10, 20, 200, 15, WHITE);
+                    DrawRectangle(10, 20, 200 * percent, 15, YELLOW);
+                    DrawText(TextFormat("%d", bullets), 215, 20, 15, YELLOW);
                 });
         ecs_man.template ForEachEntity<Alive_t>([&](auto& hel, auto&& ent) {
             if constexpr (ECS::IsInstanceOf_v<Player_t, decltype(ent)>) {
-                DrawRectangle(10, mHeight + 10 + 15 + 5, 300, 15, WHITE);
-                DrawRectangle(10, mHeight + 10 + 15 + 5, 300 * (hel.health / 100.0f), 15, GREEN);
-                DrawText(TextFormat("%d", hel.health), 315, mHeight + 10 + 15 + 5, 15, GREEN);
+                DrawRectangle(10, 20 + 15 + 5, 200, 15, WHITE);
+                DrawRectangle(10, 20 + 15 + 5, 200 * (hel.health / 100.0f), 15, GREEN);
+                DrawText(TextFormat("%d", hel.health), 215, 20 + 15 + 5, 15, GREEN);
             }
         });
         DrawFPS(10, 10);
         EndDrawing();
     }
 private:
-    int mStatusBarHeight { 50 };
     int mWidth  {  };
     int mHeight {  };
     Texture2D mBackground {  };

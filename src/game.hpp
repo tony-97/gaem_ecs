@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game_factory.hpp"
+#include "interface.hpp"
 #include "resource_manager.hpp"
 
 #include "systems/render.hpp"
@@ -28,6 +29,9 @@ struct Game
         if constexpr (ECS::IsInstanceOf_v<Asteroids_t, decltype(ent)>) {
             auto& phy { ecs_man.template GetComponent<PhysicsComponent_t>(ent) };
             game_fact.CreateAsteroidExplosion(phy.pos, phy.ang, phy.size);
+        } else if constexpr (ECS::IsInstanceOf_v<Bullet_t, decltype(ent)>) {
+            auto& phy { ecs_man.template GetComponent<PhysicsComponent_t>(ent) };
+            game_fact.CreateLaserExplosion(phy.pos, phy.ang);
         }
         ecs_man.Destroy(ent);
     }

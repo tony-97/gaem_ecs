@@ -53,17 +53,23 @@ struct ColliderSystem_t
                 });
         ecs_man.template ForEachEntity<Collidable_t>([&](auto& col_ast, auto& phy_ast, auto&& ast) {
             if constexpr (ECS::IsInstanceOf_v<Asteroids_t, decltype(ast)>) {
-                ecs_man.template ForEachEntity<Collidable_t>([&](auto& col_ast, auto& phy_pla, auto&& pla) {
+                ecs_man.template ForEachEntity<Collidable_t>([&](auto& col_pla, auto& phy_pla, auto&& pla) {
                     if constexpr (ECS::IsInstanceOf_v<Player_t, decltype(pla)>) {
-                        
+                        if (collide(col_ast, phy_ast, col_pla, phy_pla)) {
+                            auto& pla_hel { ecs_man.template GetComponent<HealthComponent_t>(pla) };
+                            auto& ast_hel  { ecs_man.template GetComponent<HealthComponent_t>(ast) };
+                            ast_hel.health = 0;
+                            pla_hel.health -= phy_ast.size * 34;
+                        }
                     }
                 });
                 ecs_man.template ForEachEntity<Collidable_t>([&](auto& col_bull, auto& phy_bull, auto&& bull) {
                     if constexpr (ECS::IsInstanceOf_v<Bullet_t, decltype(bull)>) {
                         if (collide(col_ast, phy_ast, col_bull, phy_bull)) {
-                            auto& hel1 { ecs_man.template GetComponent<HealthComponent_t>(bull) };
-                            auto& hel2 { ecs_man.template GetComponent<HealthComponent_t>(ast) };
-                            hel2.health = hel1.health = 0;
+                            auto& bull_hel { ecs_man.template GetComponent<HealthComponent_t>(bull) };
+                            auto& ast_hel  { ecs_man.template GetComponent<HealthComponent_t>(ast) };
+                            bull_hel.health = 0;
+                            ast_hel.health -= 10;
                         }
                     }
                 });

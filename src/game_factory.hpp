@@ -183,7 +183,7 @@ struct GameFactory_t
             Args::For_v<RenderComponent_t>,
             sprite,
             Rectangle {
-                0.0f, 0.0f, 256.0f, 256.0f
+                0.0f, 0.0f, 128.0f, 128.0f
             }
         };
         const Args::Arguments_t anim_args {
@@ -206,6 +206,40 @@ struct GameFactory_t
             0.0f,
             0.0f,
             scale * 0.5f
+        };
+        mECSMan.template CreateEntity<Explosion_t>(ren_args, anim_args, tim_args, phy_args);
+    }
+
+    constexpr auto CreateLaserExplosion(Vector2 pos, float rot)
+    {
+        const Texture2D sprite { mResMan.GetTextureLaserExplosion() };
+        const Args::Arguments_t ren_args {
+            Args::For_v<RenderComponent_t>,
+            sprite,
+            Rectangle {
+                0.0f, 0.0f, 50.0f, 50.0f
+            }
+        };
+        const Args::Arguments_t anim_args {
+            Args::For_v<AnimationComponent_t>,
+            20,
+            0.01f,
+        };
+        const Args::Arguments_t tim_args {
+            Args::For_v<TimerComponent_t>,
+            20 * 0.01f,
+        };
+        const Args::Arguments_t phy_args {
+            Args::For_v<PhysicsComponent_t>,
+            pos,
+            Vector2 {  },
+            Vector2 {  },
+            Vector2 { sprite.width * 0.3f / (20 * 2.0f), sprite.height * 0.3f / 2.0f },
+            1.0f,
+            rot,
+            0.0f,
+            0.0f,
+            0.3f
         };
         mECSMan.template CreateEntity<Explosion_t>(ren_args, anim_args, tim_args, phy_args);
     }
