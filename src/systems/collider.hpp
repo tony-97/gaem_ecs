@@ -9,7 +9,9 @@ struct ColliderSystem_t
     constexpr static bool collide(CollCmp_t coll1, const PhyCmpt_t& phy1, CollCmp_t coll2, const PhyCmpt_t& phy2)
     {
         auto sqdistp1p2 { (phy1.pos.x - phy2.pos.x) * (phy1.pos.x - phy2.pos.x) + (phy1.pos.y - phy2.pos.y) * (phy1.pos.y - phy2.pos.y) };
-        auto sqdistr1r2 { phy1.size * phy2.size * coll1.size * coll2.size };
+        auto r1 {  phy1.size * coll1.size };
+        auto r2 {  phy2.size * coll2.size };
+        auto sqdistr1r2 { r1 * r1 + r2 * r2 + 2 * r1 * r2 };
         return sqdistr1r2 > sqdistp1p2;
     }
 
