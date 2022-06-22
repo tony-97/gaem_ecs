@@ -3,52 +3,22 @@
 #include <raylib.h>
 
 #include <helpers.hpp>
-#include <type_traits>
-
-#include "types.hpp"
 
 struct ResourceManager_t : ECS::Uncopyable_t
 {
-    explicit ResourceManager_t()
-        : mPlayer        { LoadTexture("./resources/images/ship.png") },
-          mRocketBottom  { LoadTexture("./resources/images/rocket_bottom.png") },
-          mRocketFront   { LoadTexture("./resources/images/rocket_front.png") },
-          mBulletFire    { LoadTexture("./resources/images/fire_red.png") },
-          mAsteroid      { LoadTexture("./resources/images/rock.png") },
-          mAsteroidSmall { LoadTexture("./resources/images/rock_small.png") },
-          mBackground    { LoadTexture("./resources/images/background.png") },
-          mAsteroidExplosion { LoadTexture("./resources/images/explosion_asteroid.png") },
-          mLaserExplosion { LoadTexture("./resources/images/explosion_laser.png") }
-    {
-        InitAudioDevice();
-        mLaser = LoadSound("./resources/images/laser_sound.wav");
-    }
+    explicit ResourceManager_t();
+    ~ResourceManager_t();
+    Sound GetLaserSound() const;
 
-    ~ResourceManager_t()
-    {
-        UnloadSound(mLaser);
-        UnloadTexture(mPlayer       );
-        UnloadTexture(mRocketBottom );
-        UnloadTexture(mRocketFront  );
-        UnloadTexture(mBulletFire   );
-        UnloadTexture(mAsteroid     );     
-        UnloadTexture(mAsteroidSmall);
-        UnloadTexture(mBackground   );
-        UnloadTexture(mAsteroidExplosion);
-        CloseAudioDevice();
-    }
-
-    Sound GetLaserSound() const { return mLaser; }
-
-    Texture2D GetTexturePlayer()        const { return mPlayer;        }
-    Texture2D GetTextureRocketBottom()  const { return mRocketBottom;  }
-    Texture2D GetTextureRocketFront()   const { return mRocketFront;   }
-    Texture2D GetTextureAsteroid()      const { return mAsteroid;      }
-    Texture2D GetTextureAsteroidSmall() const { return mAsteroidSmall; }
-    Texture2D GetTextureBulletFire()    const { return mBulletFire;    }
-    Texture2D GetTextureBackground()    const { return mBackground;    }
-    Texture2D GetTextureAstroidExplosion() const { return mAsteroidExplosion; }
-    Texture2D GetTextureLaserExplosion() const { return mLaserExplosion; }
+    Texture2D GetTexturePlayer()        const;
+    Texture2D GetTextureRocketBottom()  const;
+    Texture2D GetTextureRocketFront()   const;
+    Texture2D GetTextureAsteroid()      const;
+    Texture2D GetTextureAsteroidSmall() const;
+    Texture2D GetTextureBulletFire()    const;
+    Texture2D GetTextureBackground()    const;
+    Texture2D GetTextureAstroidExplosion() const;
+    Texture2D GetTextureLaserExplosion() const;
 private:
     Sound  mLaser {  };
 
