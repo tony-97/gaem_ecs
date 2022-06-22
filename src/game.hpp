@@ -29,9 +29,12 @@ struct Game
         if constexpr (ECS::IsInstanceOf_v<Asteroids_t, decltype(ent)>) {
             auto& phy { ecs_man.template GetComponent<PhysicsComponent_t>(ent) };
             game_fact.CreateAsteroidExplosion(phy.pos, phy.ang, phy.size);
+            player_score += 10 * phy.size;
         } else if constexpr (ECS::IsInstanceOf_v<Bullet_t, decltype(ent)>) {
             auto& phy { ecs_man.template GetComponent<PhysicsComponent_t>(ent) };
             game_fact.CreateLaserExplosion(phy.pos, phy.ang);
+        } else if constexpr (ECS::IsInstanceOf_v<Player_t, decltype(ent)>) {
+            --player_lives;
         }
         ecs_man.Destroy(ent);
     }
@@ -85,8 +88,8 @@ struct Game
 
     void run()
     {
-        while (!WindowShouldClose()) {
-            ren_sys.update(ecs_man);
+        while (!WindowShouldClose() && player_lives > 0) {
+            ren_sys.update(ecs_man, player_score, player_max_lives, player_lives);
             inp_sys.update(ecs_man, *this);
             anim_sys.update(ecs_man, GetFrameTime());
             phy_sys.update(ecs_man, GetFrameTime());
@@ -101,7 +104,11 @@ private:
     static constexpr inline int screen_width  { 800 };
     static constexpr inline int screen_height { 600 };
 
-    RenderSystem_t    ren_sys   { screen_width, screen_height, "GAEM ECS!" };
+    unsigned player_lives { 3 };
+    unsigned player_max_lives { 3 };
+    unsigned player_score {   };
+
+    RenderSystem_t    ren_sys   { screen_width, screen_height, "GAEM ECS!", res_man };
     InputSystem_t     inp_sys   {  };
     AnimationSystem_t anim_sys  {  };
     PhysicsSystem_t   phy_sys   {  };
