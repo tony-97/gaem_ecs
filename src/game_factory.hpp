@@ -140,10 +140,10 @@ struct GameFactory_t
 
     constexpr auto CreateAsteroid(Vector2 pos, float rot)
     {
-        auto texture { GetRandomValue(0, 1) ? mResMan.GetTextureAsteroid() : mResMan.GetTextureAsteroidSmall() };
+        auto texture { mResMan.GetTextureAsteroid() };
         rot += GetRandomValue(-30, 30);
-        auto size { (float)GetRandomValue(1, 3) };
-        auto vel { (float)GetRandomValue(60, 150) };
+        float size = GetRandomValue(1, 3);
+        float vel  = GetRandomValue(60, 150);
         const Args::Arguments_t ren_args {
             Args::For_v<RenderComponent_t>,
             texture,
@@ -172,7 +172,7 @@ struct GameFactory_t
         };
         const Args::Arguments_t coll_args {
             Args::For_v<ColliderComponent_t>,
-            texture.width / 16,
+            19
         };
         mECSMan.template CreateEntity<Asteroids_t>(ren_args, anim_args, phy_args, coll_args);
     }
