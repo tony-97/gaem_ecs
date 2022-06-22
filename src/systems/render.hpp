@@ -1,18 +1,15 @@
 #pragma once
 
-#include <string_view>
-
 #include <raylib.h>
 
-#include "interface.hpp"
 #include "types.hpp"
 
-#include <components/render.hpp>
+#include <resource_manager.hpp>
 
 struct RenderSystem_t
 {
-    explicit RenderSystem_t(int width, int height, std::string_view title)
-        : mWidth { width }, mHeight { height }
+    explicit RenderSystem_t(int width, int height, std::string_view title, ResourceManager_t& res_man)
+        : mWidth { width }, mHeight { height }, mResMan { res_man }
     {
         InitWindow(width, height, title.data());
         SetTargetFPS(240);
@@ -29,7 +26,7 @@ struct RenderSystem_t
     }
 
     template<class ECSMan_t> constexpr void
-    update(const ECSMan_t& ecs_man)
+    update(const ECSMan_t& ecs_man, unsigned player_score, unsigned player_max_lives, unsigned player_lives)
     {
         BeginDrawing();
         DrawTexture(mBackground, 0, 0, RAYWHITE);
@@ -48,6 +45,17 @@ struct RenderSystem_t
                     //// xy reflection
                     DrawTexturePro(ren.sprite, ren.crop_rec, dest_recxy, phy.orig, phy.ang, RAYWHITE);
                 });
+        const char* score { TextFormat("%d", player_score) };
+        DrawText(score, (mWidth - MeasureText(score, mScoreFontSize)) * 0.5f, mStatusY, mScoreFontSize, WHITE);
+        auto ship { mResMan.GetTexturePlayer() };
+        auto scale { mScaleShip / ship.width };
+        unsigned i {  };
+        for (; i < player_max_lives - player_lives; ++i) {
+            DrawTextureEx(ship, { mWidth - mStatusX - mScaleShip - (mScaleShip + mPadingX) * i, mStatusY }, 0.0f, scale, DARKGRAY);
+        }
+        for (; i < player_max_lives; ++i) {
+            DrawTextureEx(ship, { mWidth - mStatusX - mScaleShip - (mScaleShip + mPadingX) * i, mStatusY }, 0.0f, scale, WHITE);
+        }
         ecs_man.template ForEachEntity<Chargeable_t>([&](auto& chrg, auto&& ent){
                     float percent { static_cast<float>(chrg.max_charge) };
                     unsigned bullets {  };
@@ -58,22 +66,36 @@ struct RenderSystem_t
                         bullets = chrg.charged;
                     }
                     percent = bullets / percent;
-                    DrawRectangle(10, 20, 200, 15, WHITE);
-                    DrawRectangle(10, 20, 200 * percent, 15, YELLOW);
-                    DrawText(TextFormat("%d", bullets), 215, 20, 15, YELLOW);
+                    DrawRectangle(mStatusX, mStatusY, mBarWidth, mBarHeight, WHITE);
+                    DrawRectangle(mStatusX, mStatusY, mBarWidth * percent, mBarHeight, YELLOW);
+                    DrawText(TextFormat("%d", bullets), mStatusX + mBarWidth + mPadingX, mStatusY, mStatusFontSize, YELLOW);
                 });
         ecs_man.template ForEachEntity<Alive_t>([&](auto& hel, auto&& ent) {
             if constexpr (ECS::IsInstanceOf_v<Player_t, decltype(ent)>) {
-                DrawRectangle(10, 20 + 15 + 5, 200, 15, WHITE);
-                DrawRectangle(10, 20 + 15 + 5, 200 * (hel.health / 100.0f), 15, GREEN);
-                DrawText(TextFormat("%d", hel.health), 215, 20 + 15 + 5, 15, GREEN);
+                DrawRectangle(mStatusX, mStatusY + mBarHeight + mPadingY, mBarWidth, mBarHeight, WHITE);
+                DrawRectangle(mStatusX, mStatusY + mBarHeight + mPadingY, mBarWidth * (hel.health / 100.0f), mBarHeight, GREEN);
+                DrawText(TextFormat("%d", hel.health), mStatusX + mBarWidth + mPadingX, mStatusY + mBarHeight + mPadingY, mStatusFontSize, GREEN);
             }
         });
-        DrawFPS(10, 10);
+        DrawFPS(10, mHeight - 50);
         EndDrawing();
     }
 private:
+    constexpr static inline float mScaleShip { 16.0f };
+
+    constexpr static inline int mBarWidth       { 200 };
+    constexpr static inline int mBarHeight      { 15 };
+    constexpr static inline int mStatusFontSize { 15 };
+    constexpr static inline int mScoreFontSize  { 30 };
+
+    constexpr static inline int mStatusX { 20 };
+    constexpr static inline int mStatusY { 20 };
+
+    constexpr static inline int mPadingX { 5 };
+    constexpr static inline int mPadingY { 5  };
+
     int mWidth  {  };
     int mHeight {  };
     Texture2D mBackground {  };
+    const ResourceManager_t& mResMan;
 };
