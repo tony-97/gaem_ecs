@@ -29,11 +29,14 @@ struct Game
         if constexpr (ECS::IsInstanceOf_v<Asteroids_t, decltype(ent)>) {
             auto& phy { ecs_man.template GetComponent<PhysicsComponent_t>(ent) };
             game_fact.CreateAsteroidExplosion(phy.pos, phy.ang, phy.size);
+            game_fact.CreateFragmentAsteroids(phy.pos, phy.ang, phy.size);
             player_score += 10 * phy.size;
         } else if constexpr (ECS::IsInstanceOf_v<Bullet_t, decltype(ent)>) {
             auto& phy { ecs_man.template GetComponent<PhysicsComponent_t>(ent) };
             game_fact.CreateLaserExplosion(phy.pos, phy.ang);
         } else if constexpr (ECS::IsInstanceOf_v<Player_t, decltype(ent)>) {
+            auto& phy { ecs_man.template GetComponent<PhysicsComponent_t>(ent) };
+            game_fact.CreateShipExplosion(phy.pos, phy.ang, phy.size);
             --player_lives;
         }
         ecs_man.Destroy(ent);

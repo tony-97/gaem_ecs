@@ -19,6 +19,7 @@ struct ResourceManager_t : ECS::Uncopyable_t
     Texture2D GetTextureBackground()    const;
     Texture2D GetTextureAstroidExplosion() const;
     Texture2D GetTextureLaserExplosion() const;
+    Texture2D GetTextureShipExplosion()  const;
 private:
     Sound  mLaser {  };
 
@@ -31,4 +32,5 @@ private:
     const Texture2D mBackground    {  };
     const Texture2D mAsteroidExplosion {  };
     const Texture2D mLaserExplosion {  };
+    const Texture2D mShipExplosion  {  };
 };

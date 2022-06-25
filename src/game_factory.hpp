@@ -138,6 +138,11 @@ struct GameFactory_t
                                                           asteroid_spawner_spawn_args);
     }
 
+    constexpr auto CreateAsteroid_(Texture2D texture, Vector2 pos, float vel, float rot, float size, int coll)
+    {
+        
+    }
+
     constexpr auto CreateAsteroid(Vector2 pos, float rot)
     {
         auto texture { mResMan.GetTextureAsteroid() };
@@ -174,74 +179,64 @@ struct GameFactory_t
             Args::For_v<ColliderComponent_t>,
             19
         };
-        mECSMan.template CreateEntity<Asteroids_t>(ren_args, anim_args, phy_args, coll_args);
+        const Args::Arguments_t hel_args {
+            Args::For_v<HealthComponent_t>,
+            static_cast<int>(size) * 40
+        };
+        mECSMan.template CreateEntity<Asteroids_t>(ren_args, anim_args, phy_args, coll_args, hel_args);
     }
 
-    constexpr auto CreateAsteroidExplosion(Vector2 pos, float rot, float scale) {
-        const Texture2D sprite { mResMan.GetTextureAstroidExplosion() };
+    constexpr auto CreateFragmentAsteroids(Vector2 pos, float rot, float size) 
+    {
+        
+    }
+
+    constexpr auto CreateExplosion(Texture2D explosion, int frames, float frame_speed, Vector2 pos, float rot, float scale)
+    {
+        float crop = explosion.height;
         const Args::Arguments_t ren_args {
             Args::For_v<RenderComponent_t>,
-            sprite,
+            explosion,
             Rectangle {
-                0.0f, 0.0f, 128.0f, 128.0f
+                0.0f, 0.0f, crop, crop
             }
         };
         const Args::Arguments_t anim_args {
             Args::For_v<AnimationComponent_t>,
-            48,
-            0.05f,
+            frames,
+            frame_speed,
         };
         const Args::Arguments_t tim_args {
             Args::For_v<TimerComponent_t>,
-            48 * 0.05f,
+            frames * frame_speed,
         };
         const Args::Arguments_t phy_args {
             Args::For_v<PhysicsComponent_t>,
             pos,
             Vector2 {  },
             Vector2 {  },
-            Vector2 { (sprite.width / (48 * 2.0f)) * scale * 0.5f, (sprite.height / 2.0f) * scale * 0.5f },
+            Vector2 { (explosion.width / (frames * 2.0f)) * scale, (explosion.height / 2.0f) * scale },
             1.0f,
             rot,
             0.0f,
             0.0f,
-            scale * 0.5f
+            scale
         };
         mECSMan.template CreateEntity<Explosion_t>(ren_args, anim_args, tim_args, phy_args);
+    }
+
+    constexpr auto CreateAsteroidExplosion(Vector2 pos, float rot, float scale) {
+        CreateExplosion(mResMan.GetTextureAstroidExplosion(), 48, 0.05f, pos, rot, scale * 0.5f);
     }
 
     constexpr auto CreateLaserExplosion(Vector2 pos, float rot)
     {
-        const Texture2D sprite { mResMan.GetTextureLaserExplosion() };
-        const Args::Arguments_t ren_args {
-            Args::For_v<RenderComponent_t>,
-            sprite,
-            Rectangle {
-                0.0f, 0.0f, 50.0f, 50.0f
-            }
-        };
-        const Args::Arguments_t anim_args {
-            Args::For_v<AnimationComponent_t>,
-            20,
-            0.01f,
-        };
-        const Args::Arguments_t tim_args {
-            Args::For_v<TimerComponent_t>,
-            20 * 0.01f,
-        };
-        const Args::Arguments_t phy_args {
-            Args::For_v<PhysicsComponent_t>,
-            pos,
-            Vector2 {  },
-            Vector2 {  },
-            Vector2 { sprite.width * 0.3f / (20 * 2.0f), sprite.height * 0.3f / 2.0f },
-            1.0f,
-            rot,
-            0.0f,
-            0.0f,
-            0.3f
-        };
-        mECSMan.template CreateEntity<Explosion_t>(ren_args, anim_args, tim_args, phy_args);
+        CreateExplosion(mResMan.GetTextureLaserExplosion(), 20, 0.02, pos, rot, 0.3f);
+    }
+
+    constexpr auto CreateShipExplosion(Vector2 pos, float rot, float scale)
+    {
+        CreateExplosion(mResMan.GetTextureShipExplosion(), 48, 0.05f, pos, rot, scale);
     }
 
     constexpr auto CreateBullet(Vector2 pos, float rot)

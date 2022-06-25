@@ -71,7 +71,7 @@ struct ColliderSystem_t
                             auto& bull_hel { ecs_man.template GetComponent<HealthComponent_t>(bull) };
                             auto& ast_hel  { ecs_man.template GetComponent<HealthComponent_t>(ast) };
                             bull_hel.health = 0;
-                            ast_hel.health -= 10;
+                            ast_hel.health -= 50;
                         }
                     }
                 });
