@@ -1,0 +1,24 @@
+export RAYLIB_PATH :=../raylib/
+export LDLIBS      := -lraylib -lwinmm -lgdi32
+export MKDIR       := mkdir
+export RM          := rm -r 
+
+.PHONY: all run run_cgdb info clean cleanall
+
+all:
+	$(MAKE) -f Makefile all
+
+run:
+	$(MAKE) -f Makefile run
+
+run_cgdb:
+	$(MAKE) -f Makefile run_valgrind run_cgdb
+
+info:
+	$(MAKE) -f Makefile run_valgrind info
+
+clean:
+	$(MAKE) -f Makefile run_valgrind clean
+
+cleanall:
+	$(MAKE) -f Makefile run_valgrind cleanall

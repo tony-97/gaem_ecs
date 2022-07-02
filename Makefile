@@ -1,12 +1,9 @@
 # Makefile config
-RAYLIB_PATH ?= /home/tony/git/raylib
 export WFLAGS    := -Wno-missing-braces -Wno-missing-field-initializers
-export LDFLAGS   := -L$(RAYLIB_PATH)
-export LDLIBS    := -lraylib
+export LDFLAGS   := -L$(RAYLIB_PATH)/src
 export CPPFLAGS  := -I../evolution/src -I../evolution/external -I$(RAYLIB_PATH)/src -I./src
 export EXEC_NAME ?= game
 export CXXFLAGS  := -std=c++17 -fno-rtti -fno-exceptions
-export MKDIR     := mkdir -p
 
 ASAN_FLAGS := -fsanitize=address -fsanitize-address-use-after-scope -fno-omit-frame-pointer
 
@@ -54,7 +51,7 @@ else
 	valgrind -s --leak-check=full --show-leak-kinds=all $(EXEC_FILE)
 endif
 
-run_gdb: $(EXEC_FILE)
+run_cgdb: $(EXEC_FILE)
 ifeq ($(ASAN),1)
 	(ASAN_OPTIONS=sleep_before_dying=10:sleep_after_init=30 $(EXEC_FILE) > /dev/null 2>&1 &)
 	sleep 5
