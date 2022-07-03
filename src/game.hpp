@@ -92,15 +92,15 @@ struct Game
     void run()
     {
         while (!WindowShouldClose() && player_lives > 0) {
-            ren_sys.update(ecs_man, player_score, player_max_lives, player_lives);
-            inp_sys.update(ecs_man, *this);
-            anim_sys.update(ecs_man, GetFrameTime());
-            phy_sys.update(ecs_man, GetFrameTime());
-            col_sys.update(ecs_man, screen_width, screen_height);
-            hel_sys.update(ecs_man, *this);
-            tim_sys .update(ecs_man, GetFrameTime());
             spawn_sys.update(ecs_man, GetFrameTime());
+            tim_sys .update(ecs_man, GetFrameTime());
             chrg_sys.update(ecs_man, GetFrameTime());
+            ren_sys.update(ecs_man, player_score, player_max_lives, player_lives);
+            anim_sys.update(ecs_man, GetFrameTime());
+            col_sys.update(ecs_man, screen_width, screen_height);
+            inp_sys.update(ecs_man, *this);
+            phy_sys.update(ecs_man, GetFrameTime());
+            hel_sys.update(ecs_man, *this);
         }
     }
 private:
