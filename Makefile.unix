@@ -1,0 +1,24 @@
+export RAYLIB_PATH := /home/tony/git/raylib/
+export LDLIBS      := -lraylib
+export MKDIR       := mkdir -p
+export RM          := rm -fR
+
+.PHONY: all run run_cgdb info clean cleanall
+
+all:
+	$(MAKE) -f Makefile all
+
+run:
+	$(MAKE) -f Makefile run
+
+run_cgdb:
+	$(MAKE) -f Makefile run_cgdb
+
+info:
+	$(MAKE) -f Makefile info
+
+clean:
+	$(MAKE) -f Makefile clean
+
+cleanall:
+	$(MAKE) -f Makefile cleanall
