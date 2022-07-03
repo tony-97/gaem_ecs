@@ -61,11 +61,15 @@ else
 endif
 
 info:
-	$(info [CURRENT_MAKEFILE] CXXFLAGS: $(CXXFLAGS))
-	$(info [CURRENT_MAKEFILE] LDFLAGS: $(LDFLAGS))
-	$(info [CURRENT_MAKEFILE] LDLIBS: $(LDLIBS))
-	$(info [CURRENT_MAKEFILE] CPPFLAGS: $(CPPFLAGS))
+	$(info [INFO] CXXFLAGS  : $(CXXFLAGS))
+	$(info [INFO] LDFLAGS   : $(LDFLAGS))
+	$(info [INFO] LDLIBS    : $(LDLIBS))
+	$(info [INFO] CPPFLAGS  : $(CPPFLAGS))
+	$(info [INFO] ASAN      : $(ASAN))
+	$(info [INFO] BUILD_NAME: $(BUILD_NAME))
+	$(info )
 	$(info =====SUB MAKE INFO=====)
+	$(info )
 	$(MAKE) -s -f Makefile.gen info
 
 clean:
