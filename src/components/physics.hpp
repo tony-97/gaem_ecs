@@ -10,7 +10,5 @@ struct PhysicsComponent_t
     Vector2 orig {  };
     float friction {  };
     float ang    {  };
-    float a  {  };
-    float w  {  };
     float size   { 1.0f };
 };

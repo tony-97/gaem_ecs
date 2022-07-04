@@ -10,7 +10,6 @@
 #include <components/render.hpp>
 #include <components/player_input.hpp>
 #include <components/input_enabler.hpp>
-#include <interface.hpp>
 
 struct InputSystem_t
 {
@@ -20,11 +19,10 @@ struct InputSystem_t
     constexpr static void update(ECSMan_t& ecs_man, GameCtx_t& gctx)
     {
         ecs_man.template ForEachEntity<PlayerInput_t>([&](const auto& inp, auto& phy, auto&&) {
+                    auto mouse { GetMousePosition() };
+                    phy.ang = std::atan2(phy.pos.y - mouse.y, phy.pos.x - mouse.x) * RAD2DEG;
                     phy.acc.x = 0.0f;
                     phy.acc.y = 0.0f;
-                    phy.a = 0.0f;
-                    if (IsKeyDown(inp.left))  phy.a += -400.0f;
-                    if (IsKeyDown(inp.right)) phy.a += +400.0f;
                     if (IsKeyDown(inp.up)) {
                         phy.acc.y += -100.0f * std::cos(phy.ang * DEG2RAD);
                         phy.acc.x += -100.0f * -std::sin(phy.ang * DEG2RAD);

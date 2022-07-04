@@ -171,8 +171,6 @@ struct GameFactory_t
             Vector2 { texture.width * size / 32.0f, texture.height * size / 2.0f },
             0.0f,
             rot,
-            0.0f,
-            0.0f,
             size
         };
         const Args::Arguments_t coll_args {
@@ -218,8 +216,6 @@ struct GameFactory_t
             Vector2 { (explosion.width / (frames * 2.0f)) * scale, (explosion.height / 2.0f) * scale },
             1.0f,
             rot,
-            0.0f,
-            0.0f,
             scale
         };
         mECSMan.template CreateEntity<Explosion_t>(ren_args, anim_args, tim_args, phy_args);
@@ -293,8 +289,6 @@ struct GameFactory_t
                 player_sprite.width  * PLAYER_SCALE / 2.0f,
                 player_sprite.height * PLAYER_SCALE / 2.0f },
             PLAYER_FRICTION,
-            0.0f,
-            0.0f,
             0.0f,
             PLAYER_SCALE
         };
