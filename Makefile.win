@@ -1,0 +1,30 @@
+# Makefile config
+export RAYLIB_PATH ?= ../raylib
+export LDLIBS      := -lraylib -lwinmm -lgdi32
+export WFLAGS      := -Wno-missing-braces -Wno-missing-field-initializers
+export LDFLAGS     := -L$(RAYLIB_PATH)/src
+export CPPFLAGS    := -I../evolution/src -I../evolution/external -I$(RAYLIB_PATH)/src -I./src
+export CXXFLAGS    := -std=c++17 -fno-rtti -fno-exceptions
+export EXEC_NAME   ?= game
+export MKDIR        = for %%F in ($$(1)) do if not exist %%F mkdir -p %%F
+export REMOVE       = for %%F in ($$(1)) do if exist %%F rmdir /q /s %%F
+
+.PHONY: all run run_cgdb info clean cleanall
+
+all:
+	$(MAKE) -f Makefile all
+
+run:
+	$(MAKE) -f Makefile run
+
+run_cgdb:
+	$(MAKE) -f Makefile run_valgrind run_cgdb
+
+info:
+	$(MAKE) -f Makefile run_valgrind info
+
+clean:
+	$(MAKE) -f Makefile run_valgrind clean
+
+cleanall:
+	$(MAKE) -f Makefile run_valgrind cleanall

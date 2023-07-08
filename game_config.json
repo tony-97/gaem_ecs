@@ -1,0 +1,49 @@
+{
+    "asteroid_spawner": {
+        "velocity": 150.0,
+        "spawn_interval": 2
+    },
+    "weapon": {
+        "charge": {
+            "interval": 1,
+            "charge": 100    
+        },
+        "animation": {
+            "tiles": 7,
+            "interval": 0.03,
+            "height": 1.0
+        }
+    },
+    "engine_effect": {
+        "animation": {
+            "tiles": 4,
+            "interval": 0.1,
+            "height": 0.5
+        }
+    },
+    "asteroid": {
+        "animation": {
+            "tiles": 1,
+            "interval": 1    
+        },
+        "collider": 19,
+        "health": 40
+    },
+    "projectile_rocket": {
+        "velocity": 500.0,
+        "animation": {
+            "tiles": 4,
+            "interval": 1.5    
+        },
+        "collider": 19
+    },
+    "asteroid_explosion": {
+        "animation": {
+            "tiles": 4,
+            "interval": 1.5    
+        }
+    },
+    "ship": {
+        "collider": 19
+    }
+}

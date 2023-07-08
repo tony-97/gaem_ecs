@@ -1,0 +1,68 @@
+{"frames": [
+
+{
+	"filename": "asteroid.png",
+	"frame": {"x":646,"y":65,"w":40,"h":35},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":28,"y":31,"w":40,"h":35},
+	"sourceSize": {"w":96,"h":96}
+},
+{
+	"filename": "engine.png",
+	"frame": {"x":461,"y":97,"w":24,"h":16},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":12,"y":20,"w":24,"h":16},
+	"sourceSize": {"w":48,"h":48}
+},
+{
+	"filename": "engine_effect.png",
+	"frame": {"x":646,"y":1,"w":168,"h":62},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":12,"y":34,"w":168,"h":62},
+	"sourceSize": {"w":192,"h":96}
+},
+{
+	"filename": "explosion_asteroid.png",
+	"frame": {"x":1,"y":1,"w":643,"h":94},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":28,"y":2,"w":643,"h":94},
+	"sourceSize": {"w":768,"h":96}
+},
+{
+	"filename": "projectile_rocket.png",
+	"frame": {"x":317,"y":97,"w":108,"h":19},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":10,"y":7,"w":108,"h":19},
+	"sourceSize": {"w":128,"h":32}
+},
+{
+	"filename": "ship.png",
+	"frame": {"x":427,"y":97,"w":32,"h":28},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":8,"y":10,"w":32,"h":28},
+	"sourceSize": {"w":48,"h":48}
+},
+{
+	"filename": "weapon.png",
+	"frame": {"x":1,"y":97,"w":314,"h":29},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":4,"w":314,"h":29},
+	"sourceSize": {"w":336,"h":48}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "texture_config.png",
+	"format": "RGBA8888",
+	"size": {"w":815,"h":127},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:c793fa63af2bb8da202587d486c87266:9d285ea768a84b23cd8c58306d595815:9bbd90bfa3c93b52bae1a896e54f15ed$"
+}
+}
