@@ -1,0 +1,3 @@
+[submodule "external/makefile"]
+	path = external/makefile
+	url = ../makefilegen
